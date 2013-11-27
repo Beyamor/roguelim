@@ -31,10 +31,14 @@ class Cell:
 		return self.tile.is_passable
 
 class Player:
+	def __init__(self):
+		self.cell = None
+
 	def move_to(self, cell):
 		if cell.entity is not None:
 			raise "Cell already has an entity"
-		cell.entity = self
+		cell.entity	= self
+		self.cell	= cell
 
 	def __str__(self):
 		return "@"
