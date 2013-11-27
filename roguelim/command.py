@@ -39,6 +39,19 @@ def do_direction_action(dungeon, direction):
 def wait(dungeon):
 	return updated_dungeon(dungeon)
 
+def show_player(dungeon):
+	player = dungeon.player
+
+	return """hp: {0}
+g:  {1}
+w:  {2}
+a:  {3}""".format(
+		player.hp,
+		player.gold,
+		None,
+		None
+		)
+
 def process(command, dungeon):
 	if command in DIRECTION_COMMANDS:
 		direction = DIRECTION_COMMANDS[command]
@@ -47,5 +60,7 @@ def process(command, dungeon):
 		return wait(dungeon)
 	elif command == "look":
 		return str(dungeon)
+	elif command == "player":
+		return show_player(dungeon)
 	else:
 		return "Unrecognized command: " + command
