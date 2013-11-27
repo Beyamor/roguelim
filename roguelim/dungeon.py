@@ -87,6 +87,8 @@ class Entity:
 		self.messages		= []
 		self.name		= name
 		self.team		= team
+		self.weapon		= None
+		self.armor		= None
 
 	def __str__(self):
 		return self.glyph
@@ -120,31 +122,49 @@ class Entity:
 		self.messages.append(message.format(*args))
 
 	def attack(self, target):
-		target.hit(self, self.base_attack)
+		damage = self.base_attack
+		if self.weapon:
+			damage = damage + self.weapon.attack
+		target.hit(self, damage)
 
 	def hit(self, attacker, damage):
-		self.hp = self.hp - damage
-		if self.hp <= 0 and self.is_alive:
-			self.hp = 0
-			self.kill()
-			attacker.send_message(random.choice([
-					"Dang, you rocked {0}'s world".format(self.name),
-					"{0} is down for the count".format(self.name),
-					"Snap, you cold murdered {0}".format(self.name)
-				]))
-			self.send_message(random.choice([
-					"Whoa, {0} killed you".format(attacker.name),
-					"{0} killed you, that's messed up".format(attacker.name),
-					"Dude, {0} schooled you.".format(attacker.name)
-				]))
+		if self.armor:
+			damage = max(0, self.armor.defense)
+
+		if damage is not 0:
+			self.hp = self.hp - damage
+			if self.hp <= 0 and self.is_alive:
+				self.hp = 0
+				self.kill()
+				attacker.send_message(random.choice([
+						"Dang, you rocked {0}'s world".format(self.name),
+						"{0} is down for the count".format(self.name),
+						"Snap, you cold murdered {0}".format(self.name)
+					]))
+				self.send_message(random.choice([
+						"Whoa, {0} killed you".format(attacker.name),
+						"{0} killed you, that's messed up".format(attacker.name),
+						"Dude, {0} schooled you.".format(attacker.name)
+					]))
+			else:
+				attacker.send_message(random.choice([
+					"You whacked {0} for {1} damage".format(self.name, damage),
+					"You laid {0} points of pain on {1}".format(damage, self.name)
+					]))
+				self.send_message(random.choice([
+					"{0} hit your face for {1} damage".format(attacker.name, damage),
+					"{0} whooped you for {1} damage".format(attacker.name, damage)
+					]))
 		else:
 			attacker.send_message(random.choice([
-				"You whacked {0} for {1} damage".format(self.name, damage),
-				"You laid {0} points of pain on {1}".format(damage, self.name)
+				"You did no damage to {0}. {1}".format(self.name, random.choice([
+						"Uh oh",
+						"Oh boy",
+						"Better run"
+					]))
 				]))
 			self.send_message(random.choice([
-				"{0} hit your face for {1} damage".format(attacker.name, damage),
-				"{0} whooped you for {1} damage".format(attacker.name, damage)
+				"{0} did no damage. Lolz".format(attacker.name)
 				]))
 
 	def kill(self):

@@ -48,8 +48,8 @@ w:  {2}
 a:  {3}""".format(
 		player.hp,
 		player.gold,
-		None,
-		None
+		player.weapon,
+		player.weapon
 		)
 
 def process(command, dungeon):
