@@ -33,7 +33,7 @@ class Gold extends Item
 
 	onTouch: (entity) ->
 		entity.gold += @value
-		@cel.removeItem()
+		@cell.removeItem()
 
 		entity.sendMessage random.choice [
 			"You picked up #{@value} gold, #{random.choice ["scrilla", "chedda", "bling"]}",
@@ -47,14 +47,16 @@ class Weapon extends Item
 		
 	onTouch: (entity) ->
 		entity.sendMessage "You see a #{@description}"
+exports.Weapon = Weapon
 	
 class Armor extends Item
 	constructor: (@defense) ->
 		super "k"
-		@description "+#{@defense} armor"
+		@description = "+#{@defense} armor"
 
 	onTouch: (entity) ->
 		entity.sendMessage "You see some #{@description}"
+exports.Armor = Armor
 
 class Cell
 	constructor: (@dungeon, @x, @y, @tile) ->
@@ -120,7 +122,7 @@ class Entity
 			@dungeon.move this, actions.move
 
 	performActionInDirection: (direction) ->
-		@perform_action(@actionsInDirection direction)
+		@performAction(@actionsInDirection direction)
 
 	sendMessage: (message) ->
 		@messages.push message
@@ -214,6 +216,7 @@ class Enemy extends Entity
 
 	onDeath: ->
 		@cell.addItem random.choice [
+			new Gold random.choice [1, 1, 1, 2, 2, 3],
 			new Weapon random.choice [1, 1, 2, 2],
 			new Armor random.choice [1, 1, 2]
 		]
@@ -245,7 +248,7 @@ class exports.Dungeon
 			throw new Error "Cell already has an entity"
 
 		if entity.cell?
-			entity.cell.entity = None
+			entity.cell.entity = null
 
 		if newCell?
 			newCell.entity = entity
@@ -284,6 +287,6 @@ class exports.Dungeon
 		for y in DUNGEON_YS
 			for x in DUNGEON_XS
 				s += @cells[x][y].render()
-			s += "\n"
+			s += "\n" unless y is DUNGEON_HEIGHT - 1
 
 		return s

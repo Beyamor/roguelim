@@ -10,3 +10,8 @@ Array::remove = (el) ->
 
 Object.defineProperty Array.prototype, 'clone'
 	get: -> @concat()
+
+exports.isEmptyObject = (obj) ->
+	for prop of obj
+		return false if obj.hasOwnProperty prop
+	return true
