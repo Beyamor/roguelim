@@ -80,7 +80,7 @@ class Cell:
 		return list(self._items)
 
 class Entity:
-	def __init__(self, glyph, hp=1, base_attack=1, name=""):
+	def __init__(self, glyph, hp=1, base_attack=1, name="", team=""):
 		self.glyph		= glyph
 		self.cell		= None
 		self.hp			= hp
@@ -88,6 +88,7 @@ class Entity:
 		self.base_attack	= base_attack
 		self.messages		= []
 		self.name		= name
+		self.team		= team
 
 	def __str__(self):
 		return self.glyph
@@ -108,7 +109,7 @@ class Entity:
 
 		target_cell = self.cell.relative(direction)
 
-		if target_cell.entity:
+		if target_cell.entity and target_cell.entity.team != self.team:
 			self.attack(target_cell.entity)
 		else:
 			self.dungeon.move(self, target_cell)
@@ -147,7 +148,7 @@ class Entity:
 
 class Player(Entity):
 	def __init__(self):
-		Entity.__init__(self, "@", hp=10, base_attack=1, name="Player")
+		Entity.__init__(self, "@", hp=10, base_attack=1, name="Player", team="player")
 		self.gold = 0
 
 	def on_move(self):
@@ -159,13 +160,12 @@ class Player(Entity):
 
 class Enemy(Entity):
 	def __init__(self):
-		Entity.__init__(self, "E", name="Enemy")
+		Entity.__init__(self, "E", name="Enemy", team="enemy")
 
 	def update(self):
-		direction	= random.choice(DIRECTIONS)
-		target_cell	= self.cell.relative(direction)
-		if target_cell and target_cell.is_passable:
-			self.dungeon.move(self, target_cell)
+		direction = random.choice(DIRECTIONS)
+		if self.can_do_direction_action(direction):
+			self.do_direction_action(direction)
 
 		self.messages = [] # who cares
 
