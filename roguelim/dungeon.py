@@ -65,7 +65,7 @@ class Cell:
 		self.item = item
 
 	def remove_item(self):
-		self._item = None
+		self.item = None
 
 	@property
 	def is_passable(self):
