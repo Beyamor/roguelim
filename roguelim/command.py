@@ -1,13 +1,19 @@
 DIRECTION_COMMANDS = {
 		'north':	'north',
+		'n':		'north',
 		'up':		'north',
 		'east':		'east',
+		'e':		'east',
 		'right':	'east',
 		'south':	'south',
+		's':		'south',
 		'down':		'south',
 		'west':		'west',
+		'w':		'west',
 		'left':		'west'
 		}
+
+WAIT_COMMANDS = ['wait']
 
 def read(s):
 	return s.strip().lower()
@@ -21,12 +27,15 @@ def try_moving_player(dungeon, direction):
 	else:
 		return "Can't move " + direction + "\n" + str(dungeon)
 
+def wait(dungeon):
+	dungeon.update()
+	return str(dungeon)
+
 def process(command, dungeon):
 	if command in DIRECTION_COMMANDS:
 		direction = DIRECTION_COMMANDS[command]
 		return try_moving_player(dungeon, direction)
-	elif command == "wait":
-		dungeon.update()
-		return str(dungeon)
+	elif command in WAIT_COMMANDS:
+		return wait(dungeon)
 	else:
 		return "Unrecognized command: " + command
