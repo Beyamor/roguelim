@@ -1,5 +1,5 @@
 util	= require './util.js'
-d	= require './dungeon.js'
+items	= require './items.js'
 
 DIRECTION_COMMANDS =
 	north:	'north'
@@ -53,7 +53,7 @@ equip = (dungeon) ->
 	player	= dungeon.player
 	item	= player.cell.item
 
-	if item? and item instanceof d.Weapon
+	if item? and item instanceof items.Weapon
 		oldWeapon = player.weapon
 		item.cell.removeItem()
 		player.weapon = item
@@ -61,7 +61,7 @@ equip = (dungeon) ->
 			player.cell.addItem oldWeapon
 		return updatedDungeon dungeon
 
-	else if item? and item instanceof d.Armor
+	else if item? and item instanceof items.Armor
 		oldArmor = player.armor
 		item.cell.removeItem()
 		player.armor = item

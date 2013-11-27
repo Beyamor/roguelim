@@ -15,3 +15,12 @@ exports.isEmptyObject = (obj) ->
 	for prop of obj
 		return false if obj.hasOwnProperty prop
 	return true
+
+exports.DIRECTIONS = ['north', 'east', 'south', 'west']
+exports.DIRECTION_DELTAS =
+	north:	[0, -1]
+	east:	[1, 0]
+	south:	[0, 1]
+	west:	[-1, 0]
+
+
