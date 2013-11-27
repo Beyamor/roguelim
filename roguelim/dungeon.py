@@ -130,11 +130,25 @@ class Entity:
 		if self.hp <= 0 and self.is_alive:
 			self.hp = 0
 			self.kill()
-			attacker.send_message("You killed {0}, dang", self.name)
-			self.send_message("Whoa, {0} killed you", attacker.name)
+			attacker.send_message(random.choice([
+					"Dang, you rocked {0}'s world".format(self.name),
+					"{0} is down for the count".format(self.name),
+					"Snap, you cold murdered {0}".format(self.name)
+				]))
+			self.send_message(random.choice([
+					"Whoa, {0} killed you".format(attacker.name),
+					"{0} killed you, that's messed up".format(attacker.name),
+					"Dude, {0} schooled you.".format(attacker.name)
+				]))
 		else:
-			attacker.send_message("You attacked {0} for {1} damage", self.name, damage)
-			self.send_message("{0} hit you for {1} damage", attacker.name, damage)
+			attacker.send_message(random.choice([
+				"You whacked {0} for {1} damage".format(self.name, damage),
+				"You laid {0} points of pain on {1}".format(damage, self.name)
+				]))
+			self.send_message(random.choice([
+				"{0} hit your face for {1} damage".format(attacker.name, damage),
+				"{0} whooped you for {1} damage".format(attacker.name, damage)
+				]))
 
 	def kill(self):
 		if not self.is_alive:
@@ -163,8 +177,14 @@ class Player(Entity):
 		for item in self.cell.items:
 			if isinstance(item, Gold):
 				self.cell.remove_item(item)
-				self.send_message("You picked up {0} gold", item.value)
-				self.gold = self.gold + item.value
+				self.send_message(random.choice([
+					"You picked up {0} gold, {1}".format(item.value, random.choice([
+						"scrilla",
+						"chedda",
+						"bling"
+						])),
+					"{0} in the bank, yo".format(item.value)
+					]))
 
 class Enemy(Entity):
 	def __init__(self):
