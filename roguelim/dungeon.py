@@ -55,11 +55,12 @@ class Cell:
 		return self.tile.is_passable and self.entity is None
 
 class Entity:
-	def __init__(self, glyph, hp=1):
-		self.glyph	= glyph
-		self.cell	= None
-		self.hp		= hp
-		self.is_alive	= True
+	def __init__(self, glyph, hp=1, base_attack=1):
+		self.glyph		= glyph
+		self.cell		= None
+		self.hp			= hp
+		self.is_alive		= True
+		self.base_attack	= base_attack
 
 	def __str__(self):
 		return self.glyph
@@ -80,14 +81,13 @@ class Entity:
 
 		target_cell = self.cell.relative(direction)
 
-		# first, try attacking
 		if target_cell.entity:
 			self.attack(target_cell.entity)
 		else:
 			self.dungeon.move(self, target_cell)
 
 	def attack(self, target):
-		target.hit(1)
+		target.hit(self.base_attack)
 
 	def hit(self, damage):
 		self.hp = self.hp - damage
@@ -104,7 +104,7 @@ class Entity:
 
 class Player(Entity):
 	def __init__(self):
-		Entity.__init__(self, "@")
+		Entity.__init__(self, "@", hp=10, base_attack=1)
 
 class Enemy(Entity):
 	def __init__(self):
