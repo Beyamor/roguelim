@@ -27,6 +27,7 @@ class Cell:
 		else:
 			return str(self.tile)
 
+	@property
 	def is_passable(self):
 		return self.tile.is_passable
 
@@ -60,7 +61,7 @@ class Dungeon:
 		for x in DUNGEON_XS:
 			for y in DUNGEON_YS:
 				cell = self.cells[x][y]
-				if cell.is_passable():
+				if cell.is_passable:
 					free_cells.append(cell)
 
 		if len(free_cells) is 0:
