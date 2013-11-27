@@ -2,8 +2,16 @@ import random
 
 DUNGEON_WIDTH	= 10
 DUNGEON_HEIGHT	= 10
-FLOOR_TILE	= "="
-WALL_TILE	= "#"
+
+class Tile:
+	def __init__(self, glyph):
+		self.glyph = glyph
+
+	def __str__(self):
+		return self.glyph
+
+WALL_TILE	= Tile("=")
+FLOOR_TILE	= Tile("#")
 
 class Dungeon:
 	def __init__(self):
@@ -16,7 +24,7 @@ class Dungeon:
 		s = ""
 		for y in range(DUNGEON_HEIGHT):
 			for x in range(DUNGEON_WIDTH):
-				s = s + self.tiles[x][y]
+				s = s + str(self.tiles[x][y])
 
 			if y < DUNGEON_HEIGHT - 1:
 				s = s + "\n"
