@@ -30,10 +30,42 @@ class Item:
 	def __str__(self):
 		return self.glyph
 
+	def on_touch(self, entity):
+		pass
+
 class Gold(Item):
 	def __init__(self, value):
 		Item.__init__(self, "%")
-		self.value = value
+		self.value	= value
+		self.cell	= None
+
+	def on_touch(self, entity):
+		entity.gold = entity.gold + self.value
+		self.cell.remove_item()
+		entity.send_message(random.choice([
+			"You picked up {0} gold, {1}".format(self.value, random.choice([
+				"scrilla",
+				"chedda",
+				"bling"
+				])),
+			"{0} in the bank, yo".format(self.value)
+			]))
+
+class Weapon(Item):
+	def __init__(self, attack):
+		Item.__init__(self, "t")
+		self.attack = attack
+
+	def on_touch(self, entity):
+		entity.send_message("You see a +{0} weapon".format(self.attack))
+
+class Armor(Item):
+	def __init__(self, defense):
+		Item.__init__(self, "k")
+		self.defense = defense
+
+	def on_touch(self, entity):
+		entity.send_message("You see some +{0} armor".format(self.defense))
 
 class Cell:
 	def __init__(self, dungeon, x, y, tile):
@@ -62,10 +94,13 @@ class Cell:
 		return self.dungeon.cells[relx][rely]
 
 	def add_item(self, item):
-		self.item = item
+		self.item	= item
+		item.cell	= self
 
 	def remove_item(self):
-		self.item = None
+		if self.item:
+			self.item.cell	= None
+			self.item	= None
 
 	@property
 	def is_passable(self):
@@ -192,17 +227,9 @@ class Player(Entity):
 
 	def on_move(self):
 		item = self.cell.item
-		if item and isinstance(item, Gold):
-			self.cell.remove_item()
-			self.send_message(random.choice([
-				"You picked up {0} gold, {1}".format(item.value, random.choice([
-					"scrilla",
-					"chedda",
-					"bling"
-					])),
-				"{0} in the bank, yo".format(item.value)
-				]))
-
+		if item:
+			item.on_touch(self)
+			
 class Enemy(Entity):
 	def __init__(self):
 		Entity.__init__(self, "E", name="Enemy", team="enemy")
@@ -212,7 +239,11 @@ class Enemy(Entity):
 		self.messages = [] # who cares
 
 	def on_death(self):
-		self.cell.add_item(Gold(random.choice([1, 1, 1, 2, 2, 3])))
+		self.cell.add_item(random.choice([
+				#Gold(random.choice([1, 1, 1, 2, 2, 3])),
+				Weapon(random.choice([1, 1, 2, 2])),
+				Armor(random.choice([1, 1, 2]))
+			]))
 
 class Dungeon:
 	def __init__(self):
