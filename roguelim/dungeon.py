@@ -1,9 +1,15 @@
 import random
 
-DUNGEON_WIDTH	= 10
-DUNGEON_HEIGHT	= 10
-DUNGEON_XS	= range(DUNGEON_WIDTH)
-DUNGEON_YS	= range(DUNGEON_HEIGHT)
+DUNGEON_WIDTH		= 10
+DUNGEON_HEIGHT		= 10
+DUNGEON_XS		= range(DUNGEON_WIDTH)
+DUNGEON_YS		= range(DUNGEON_HEIGHT)
+DIRECTION_DELTAS	= {
+		"north":	(0, -1),
+		"east":		(1, 0),
+		"south":	(0, 1),
+		"west":		(-1, 0)
+		}
 
 class Tile:
 	def __init__(self, glyph, is_passable):
@@ -17,7 +23,9 @@ WALL_TILE	= Tile("#", False)
 FLOOR_TILE	= Tile("=", True)
 
 class Cell:
-	def __init__(self, tile):
+	def __init__(self, x, y, tile):
+		self.x		= x
+		self.y		= y
 		self.tile	= tile
 		self.entity	= None
 
@@ -35,12 +43,6 @@ class Player:
 	def __init__(self):
 		self.cell = None
 
-	def move_to(self, cell):
-		if cell.entity is not None:
-			raise "Cell already has an entity"
-		cell.entity	= self
-		self.cell	= cell
-
 	def __str__(self):
 		return "@"
 
@@ -50,11 +52,41 @@ class Dungeon:
 		for x in DUNGEON_XS:
 			for y in DUNGEON_YS:
 				tile = random.choice([WALL_TILE, FLOOR_TILE])
-				self.cells[x][y] = Cell(tile)
+				self.cells[x][y] = Cell(x, y, tile)
 
-		player_cell = self.get_free_cell()
 		self.player = Player()
-		self.player.move_to(player_cell)
+		self.place_on_free_cell(self.player)
+
+	def place(self, entity, cell):
+		if cell.entity:
+			raise Exception("Cell already has an entity")
+
+		cell.entity	= entity
+		entity.cell	= cell
+
+	def place_on_free_cell(self, entity):
+		self.place(entity, self.get_free_cell())
+
+	def can_move(self, entity, direction):
+		(dx, dy)	= DIRECTION_DELTAS[direction]
+		newX		= entity.cell.x + dx
+		newY		= entity.cell.y + dy
+
+		if newX < 0 or newX >= DUNGEON_WIDTH or newY < 0 or newY >= DUNGEON_HEIGHT:
+			return False
+
+		return self.cells[newX][newY].is_passable
+
+	def move(self, entity, direction):
+		if not self.can_move(entity, direction):
+			raise Exception("Can't move entity ({0}, {1}) {2}".format(entity.cell.x, entity.cell.y, direction))
+
+		(dx, dy)	= DIRECTION_DELTAS[direction]
+		new_cell	= self.cells[entity.cell.x + dx][entity.cell.y + dy]
+
+		entity.cell.entity	= None
+		entity.cell		= new_cell
+		new_cell.entity		= entity
 
 	def get_free_cell(self):
 		free_cells = []
