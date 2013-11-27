@@ -42,13 +42,13 @@ class Cell:
 		self.y		= y
 		self.tile	= tile
 		self.entity	= None
-		self.items	= []
+		self._items	= []
 
 	def __str__(self):
 		if self.entity:
 			return str(self.entity)
-		elif len(self.items) > 0:
-			return str(self.items[-1])
+		elif len(self._items) > 0:
+			return str(self._items[-1])
 		else:
 			return str(self.tile)
 
@@ -66,11 +66,18 @@ class Cell:
 			self.entity.update()
 
 	def add_item(self, item):
-		self.items.append(item)
+		self._items.append(item)
+
+	def remove_item(self, item):
+		self._items.remove(item)
 
 	@property
 	def is_passable(self):
 		return self.tile.is_passable and self.entity is None
+
+	@property
+	def items(self):
+		return list(self._items)
 
 class Entity:
 	def __init__(self, glyph, hp=1, base_attack=1, name=""):
@@ -128,6 +135,9 @@ class Entity:
 		self.on_death()
 		self.dungeon.remove(self)
 
+	def on_move(self):
+		pass
+
 	def on_death(self):
 		pass
 
@@ -138,6 +148,14 @@ class Entity:
 class Player(Entity):
 	def __init__(self):
 		Entity.__init__(self, "@", hp=10, base_attack=1, name="Player")
+		self.gold = 0
+
+	def on_move(self):
+		for item in self.cell.items:
+			if isinstance(item, Gold):
+				self.cell.remove_item(item)
+				self.send_message("You picked up {0} gold", item.value)
+				self.gold = self.gold + item.value
 
 class Enemy(Entity):
 	def __init__(self):
@@ -179,10 +197,11 @@ class Dungeon:
 		if entity.cell:
 			entity.cell.entity = None
 
-		entity.cell = new_cell
-
 		if new_cell:
 			new_cell.entity = entity
+
+		entity.cell = new_cell
+		entity.on_move()
 
 	def get_free_cell(self):
 		free_cells = []
