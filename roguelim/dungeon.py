@@ -55,9 +55,11 @@ class Cell:
 		return self.tile.is_passable and self.entity is None
 
 class Entity:
-	def __init__(self, glyph):
+	def __init__(self, glyph, hp=1):
 		self.glyph	= glyph
 		self.cell	= None
+		self.hp		= hp
+		self.is_alive	= True
 
 	def __str__(self):
 		return self.glyph
@@ -85,7 +87,16 @@ class Entity:
 			self.dungeon.move(self, target_cell)
 
 	def attack(self, target):
-		print("Attacking some dude")
+		target.hit(1)
+
+	def hit(self, damage):
+		self.hp = self.hp - damage
+		if self.hp <= 0 and self.is_alive:
+			self.kill()
+
+	def kill(self):
+		self.is_alive = False
+		self.dungeon.remove(self)
 
 	@property
 	def dungeon(self):
@@ -110,7 +121,7 @@ class Dungeon:
 		self.cells	= [[None for y in DUNGEON_YS] for x in DUNGEON_XS]
 		for x in DUNGEON_XS:
 			for y in DUNGEON_YS:
-				tile = random.choice([WALL_TILE, FLOOR_TILE])
+				tile = random.choice([WALL_TILE, FLOOR_TILE, FLOOR_TILE, FLOOR_TILE])
 				self.cells[x][y] = Cell(self, x, y, tile)
 
 		self.player = Player()
@@ -146,6 +157,11 @@ class Dungeon:
 		if len(free_cells) is 0:
 			raise Exception("No free cells available")
 		return random.choice(free_cells)
+
+	def remove(self, entity):
+		if entity.cell:
+			entity.cell.entity	= None
+			entity.cell		= None
 
 	def update(self):
 		for x in DUNGEON_XS:
