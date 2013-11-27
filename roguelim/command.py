@@ -31,9 +31,10 @@ def updated_dungeon(dungeon):
 	return get_result(dungeon)
 
 def do_direction_action(dungeon, direction):
-	player = dungeon.player
-	if player.can_do_direction_action(direction):
-		player.do_direction_action(direction)
+	player			= dungeon.player
+	possible_actions	= player.actions_in_direction(direction)
+	if possible_actions:
+		player.perform_action(possible_actions)
 		return updated_dungeon(dungeon)
 	else:
 		return "Can't move " + direction + "\n" + str(dungeon)

@@ -97,27 +97,27 @@ class Entity:
 	def update(self):
 		pass
 
-	def can_do_direction_action(self, direction):
-		target_cell = self.cell.relative(direction)
+	def actions_in_direction(self, direction):
+		actions		= {}
+		target_cell	= self.cell.relative(direction)
 		if target_cell:
 			if target_cell.entity and target_cell.entity.team != self.team:
-				return True
+				actions['attack'] = target_cell.entity
 			if target_cell.is_passable:
-				return True
-			return False
-		else:
-			return False
+				actions['move'] = target_cell
+		return actions
 
-	def do_direction_action(self, direction):
-		if not self.can_do_direction_action(direction):
-			raise Exception("Can't do direction action")
+	def perform_action(self, actions):
+		if not actions:
+			return
 
-		target_cell = self.cell.relative(direction)
+		if 'attack' in actions:
+			self.attack(actions['attack'])
+		elif 'move' in actions:
+			self.dungeon.move(self, actions['move'])
 
-		if target_cell.entity and target_cell.entity.team != self.team:
-			self.attack(target_cell.entity)
-		else:
-			self.dungeon.move(self, target_cell)
+	def perform_action_in_direction(self, direction):
+		self.perform_action(self.actions_in_direction(direction))
 
 	def send_message(self, message, *args):
 		self.messages.append(message.format(*args))
@@ -168,10 +168,7 @@ class Enemy(Entity):
 		Entity.__init__(self, "E", name="Enemy", team="enemy")
 
 	def update(self):
-		direction = random.choice(DIRECTIONS)
-		if self.can_do_direction_action(direction):
-			self.do_direction_action(direction)
-
+		self.perform_action_in_direction(random.choice(DIRECTIONS))
 		self.messages = [] # who cares
 
 	def on_death(self):
