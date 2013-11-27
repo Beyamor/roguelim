@@ -4,6 +4,7 @@ DUNGEON_WIDTH		= 10
 DUNGEON_HEIGHT		= 10
 DUNGEON_XS		= range(DUNGEON_WIDTH)
 DUNGEON_YS		= range(DUNGEON_HEIGHT)
+DIRECTIONS		= ['north', 'east', 'south', 'west']
 DIRECTION_DELTAS	= {
 		"north":	(0, -1),
 		"east":		(1, 0),
@@ -23,7 +24,8 @@ WALL_TILE	= Tile("#", False)
 FLOOR_TILE	= Tile("=", True)
 
 class Cell:
-	def __init__(self, x, y, tile):
+	def __init__(self, dungeon, x, y, tile):
+		self.dungeon	= dungeon
 		self.x		= x
 		self.y		= y
 		self.tile	= tile
@@ -34,6 +36,10 @@ class Cell:
 			return str(self.entity)
 		else:
 			return str(self.tile)
+
+	def update(self):
+		if self.entity:
+			self.entity.update()
 
 	@property
 	def is_passable(self):
@@ -47,6 +53,13 @@ class Entity:
 	def __str__(self):
 		return self.glyph
 
+	def update(self):
+		pass
+
+	@property
+	def dungeon(self):
+		return self.cell.dungeon
+
 class Player(Entity):
 	def __init__(self):
 		Entity.__init__(self, "@")
@@ -55,13 +68,18 @@ class Enemy(Entity):
 	def __init__(self):
 		Entity.__init__(self, "E")
 
+	def update(self):
+		direction = random.choice(DIRECTIONS)
+		if self.dungeon.can_move(self, direction):
+			self.dungeon.move(self, direction)
+
 class Dungeon:
 	def __init__(self):
 		self.cells	= [[None for y in DUNGEON_YS] for x in DUNGEON_XS]
 		for x in DUNGEON_XS:
 			for y in DUNGEON_YS:
 				tile = random.choice([WALL_TILE, FLOOR_TILE])
-				self.cells[x][y] = Cell(x, y, tile)
+				self.cells[x][y] = Cell(self, x, y, tile)
 
 		self.player = Player()
 		self.place_on_free_cell(self.player)
@@ -112,6 +130,11 @@ class Dungeon:
 		if len(free_cells) is 0:
 			raise Exception("No free cells available")
 		return random.choice(free_cells)
+
+	def update(self):
+		for x in DUNGEON_XS:
+			for y in DUNGEON_YS:
+				self.cells[x][y].update()
 
 	def __str__(self):
 		s = ""
