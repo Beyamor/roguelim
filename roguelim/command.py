@@ -26,18 +26,20 @@ def get_result(dungeon):
 	dungeon.player.messages = []
 	return result
 
+def updated_dungeon(dungeon):
+	dungeon.update()
+	return get_result(dungeon)
+
 def do_direction_action(dungeon, direction):
 	player = dungeon.player
 	if player.can_do_direction_action(direction):
 		player.do_direction_action(direction)
-		dungeon.update()
-		return get_result(dungeon)
+		return updated_dungeon(dungeon)
 	else:
 		return "Can't move " + direction + "\n" + str(dungeon)
 
 def wait(dungeon):
-	dungeon.update()
-	return get_result(dungeon)
+	return updated_dungeon(dungeon)
 
 def process(command, dungeon):
 	if command in DIRECTION_COMMANDS:
