@@ -19,10 +19,10 @@ VIEW_COMMANDS	= ['view', 'v']
 def read(s):
 	return s.strip().lower()
 
-def try_moving_player(dungeon, direction):
+def do_direction_action(dungeon, direction):
 	player = dungeon.player
-	if dungeon.can_move(player, direction):
-		dungeon.move(player, direction)
+	if player.can_do_direction_action(direction):
+		player.do_direction_action(direction)
 		dungeon.update()
 		return str(dungeon)
 	else:
@@ -35,7 +35,7 @@ def wait(dungeon):
 def process(command, dungeon):
 	if command in DIRECTION_COMMANDS:
 		direction = DIRECTION_COMMANDS[command]
-		return try_moving_player(dungeon, direction)
+		return do_direction_action(dungeon, direction)
 	elif command in WAIT_COMMANDS:
 		return wait(dungeon)
 	elif command in VIEW_COMMANDS:

@@ -37,6 +37,15 @@ class Cell:
 		else:
 			return str(self.tile)
 
+	def relative(self, direction):
+		(dx, dy)	= DIRECTION_DELTAS[direction]
+		relx		= self.x + dx
+		rely		= self.y + dy
+
+		if relx < 0 or relx >= DUNGEON_WIDTH or rely < 0 or rely >= DUNGEON_HEIGHT:
+			return None
+		return self.dungeon.cells[relx][rely]
+
 	def update(self):
 		if self.entity:
 			self.entity.update()
@@ -56,6 +65,28 @@ class Entity:
 	def update(self):
 		pass
 
+	def can_do_direction_action(self, direction):
+		target_cell = self.cell.relative(direction)
+		if target_cell:
+			return target_cell.entity or target_cell.is_passable
+		else:
+			return False
+
+	def do_direction_action(self, direction):
+		if not self.can_do_direction_action(direction):
+			raise Exception("Can't do direction action")
+
+		target_cell = self.cell.relative(direction)
+
+		# first, try attacking
+		if target_cell.entity:
+			self.attack(target_cell.entity)
+		else:
+			self.dungeon.move(self, target_cell)
+
+	def attack(self, target):
+		print("Attacking some dude")
+
 	@property
 	def dungeon(self):
 		return self.cell.dungeon
@@ -69,9 +100,10 @@ class Enemy(Entity):
 		Entity.__init__(self, "E")
 
 	def update(self):
-		direction = random.choice(DIRECTIONS)
-		if self.dungeon.can_move(self, direction):
-			self.dungeon.move(self, direction)
+		direction	= random.choice(DIRECTIONS)
+		target_cell	= self.cell.relative(direction)
+		if target_cell and target_cell.is_passable:
+			self.dungeon.move(self, target_cell)
 
 class Dungeon:
 	def __init__(self):
@@ -88,36 +120,20 @@ class Dungeon:
 			enemy = Enemy()
 			self.place_on_free_cell(enemy)
 
-	def place(self, entity, cell):
-		if cell.entity:
+	def place_on_free_cell(self, entity):
+		self.move(entity, self.get_free_cell())
+
+	def move(self, entity, new_cell):
+		if new_cell and new_cell.entity:
 			raise Exception("Cell already has an entity")
 
-		cell.entity	= entity
-		entity.cell	= cell
+		if entity.cell:
+			entity.cell.entity = None
 
-	def place_on_free_cell(self, entity):
-		self.place(entity, self.get_free_cell())
+		entity.cell = new_cell
 
-	def can_move(self, entity, direction):
-		(dx, dy)	= DIRECTION_DELTAS[direction]
-		newX		= entity.cell.x + dx
-		newY		= entity.cell.y + dy
-
-		if newX < 0 or newX >= DUNGEON_WIDTH or newY < 0 or newY >= DUNGEON_HEIGHT:
-			return False
-
-		return self.cells[newX][newY].is_passable
-
-	def move(self, entity, direction):
-		if not self.can_move(entity, direction):
-			raise Exception("Can't move entity ({0}, {1}) {2}".format(entity.cell.x, entity.cell.y, direction))
-
-		(dx, dy)	= DIRECTION_DELTAS[direction]
-		new_cell	= self.cells[entity.cell.x + dx][entity.cell.y + dy]
-
-		entity.cell.entity	= None
-		entity.cell		= new_cell
-		new_cell.entity		= entity
+		if new_cell:
+			new_cell.entity = entity
 
 	def get_free_cell(self):
 		free_cells = []
