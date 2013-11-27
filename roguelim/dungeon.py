@@ -39,12 +39,17 @@ class Cell:
 	def is_passable(self):
 		return self.tile.is_passable
 
-class Player:
-	def __init__(self):
-		self.cell = None
+class Entity:
+	def __init__(self, glyph):
+		self.glyph	= glyph
+		self.cell	= None
 
 	def __str__(self):
-		return "@"
+		return self.glyph
+
+class Player(Entity):
+	def __init__(self):
+		Entity.__init__(self, "@")
 
 class Dungeon:
 	def __init__(self):
