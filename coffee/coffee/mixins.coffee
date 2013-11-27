@@ -18,13 +18,13 @@ exports.apply = (definition, entity) ->
 		unless entity[k]?
 			entity[k] = v
 
-defaualts = (entity, props) ->
+defaults = (entity, props) ->
 	for k, v of props
 		unless entity[k]?
 			entity[k] = v
 
 defmixin 'attacker',
-	intiailize: ->
+	initialize: ->
 		defaults this,
 			baseAttack: 1
 
@@ -41,40 +41,40 @@ defmixin 'defender',
 
 		if damage isnt 0
 			@hp -= damage
-			if @hp <= 0 and @isAlive
+			if @hp <= 0 and this.isAlive
 				@hp = 0
 				@kill()
 				attacker.sendMessage random.choice [
 					"Dang, you rocked #{@name}'s world",
 					"#{@name} is down for the count",
 					"Snap, you cold murdered #{@name}"
-				] if attacker.hasMixin 'messageReceiver'
+				] if attacker.is 'messageReceiver'
 
 				@sendMessage random.choice [
 					"Whoa, #{attacker.name} killed you",
 					"#{attacker.name} killed you, that's messed up",
 					"Dude, #{attacker.name} schooled you"
 
-				] if @hasMixin 'messageReceiver'
+				] if this.is 'messageReceiver'
 
-			else if @isAlive
+			else if this.isAlive
 				attacker.sendMessage random.choice [
-					"You whacked #{attacker.name} for #{damage} damage",
+					"You whacked #{@name} for #{damage} damage",
 					"You laid #{damage} points of pain on #{@name}"
-				] if attacker.hasMixin 'messageReceiver'
+				] if attacker.is 'messageReceiver'
 
 				@sendMessage random.choice [
 					"#{attacker.name} hit your face for #{damage} damage",
 					"#{attacker.name} whooped you for #{damage} damage"
-				] if @hasMixin 'messageReceiver'
+				] if this.is 'messageReceiver'
 		else
 			attacker.sendMessage random.choice [
 				"You did no damage to #{@name}. #{random.choice ["Uh oh", "Oh boy", "Better run"]}"
-			] if attacker.hasMixin 'messageReceiver'
+			] if attacker.is 'messageReceiver'
 
 			@sendMessage random.choice [
 				"#{attacker.name} did no damage. Lolz"
-			] if @hasMixin 'messageReceiver'
+			] if this.is 'messageReceiver'
 
 defmixin 'messageReceiver',
 	initialize: ->

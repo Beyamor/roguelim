@@ -10,7 +10,6 @@ class Entity
 		@isAlive	= true
 		@messages	= []
 		@hp		= opts.hp or 1
-		@baseAttack	= opts.attack or 1
 		@name		= opts.name
 		@team		= opts.team
 
@@ -20,8 +19,9 @@ class Entity
 			mixin = mixins.get name
 			mixins.apply mixin, this
 			@mixins.push mixin
+
 		for mixin in @mixins
-			mixin.initialize.call this if mixin.initialize?
+			mixin.initialize.call(this) if mixin.initialize?
 
 	actionsInDirection: (direction) ->
 		actions		= {}
@@ -58,7 +58,7 @@ class Entity
 	render: ->
 		@glyph
 
-	hasMixin: (name) ->
+	is: (name) ->
 		for mixin in @mixins
 			return true if mixin.name is name
 		return false
@@ -71,7 +71,6 @@ class exports.Player extends Entity
 	constructor: () ->
 		super "@",
 			hp: 10
-			attack: 1
 			name: "Player"
 			team: "player"
 			mixins: ['attacker', 'defender', 'messageReceiver']
