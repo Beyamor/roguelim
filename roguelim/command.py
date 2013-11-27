@@ -1,3 +1,5 @@
+import dungeon as d
+
 DIRECTION_COMMANDS = {
 		'north':	'north',
 		'n':		'north',
@@ -48,9 +50,32 @@ w:  {2}
 a:  {3}""".format(
 		player.hp,
 		player.gold,
-		player.weapon,
-		player.weapon
+		player.weapon.description if player.weapon else "None",
+		player.armor.description if player.armor else "None"
 		)
+
+def equip(dungeon):
+	player	= dungeon.player
+	item	= player.cell.item
+
+	if item and isinstance(item, d.Weapon):
+		old_weapon = player.weapon
+		item.cell.remove_item()
+		player.weapon = item
+		if old_weapon:
+			player.cell.add_item(old_weapon)
+		return updated_dungeon(dungeon)
+
+	elif item and isinstance(item, d.Armor):
+		old_armor = player.armor
+		item.cell.remove_item()
+		player.armor = item
+		if old_armor:
+			player.cell.add_item(old_armor)
+		return updated_dungeon(dungeon)
+	
+	else:
+		return "Nothing to equip"
 
 def process(command, dungeon):
 	if command in DIRECTION_COMMANDS:
@@ -62,5 +87,7 @@ def process(command, dungeon):
 		return str(dungeon)
 	elif command == "player":
 		return show_player(dungeon)
+	elif command == "equip":
+		return equip(dungeon)
 	else:
 		return "Unrecognized command: " + command

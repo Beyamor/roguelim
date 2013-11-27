@@ -57,7 +57,11 @@ class Weapon(Item):
 		self.attack = attack
 
 	def on_touch(self, entity):
-		entity.send_message("You see a +{0} weapon".format(self.attack))
+		entity.send_message("You see a {0}".format(self.description))
+
+	@property
+	def description(self):
+		return "+{0} weapon".format(self.attack)
 
 class Armor(Item):
 	def __init__(self, defense):
@@ -65,7 +69,11 @@ class Armor(Item):
 		self.defense = defense
 
 	def on_touch(self, entity):
-		entity.send_message("You see some +{0} armor".format(self.defense))
+		entity.send_message("You see some {0}".format(self.description))
+
+	@property
+	def description(self):
+		return "+{0} armor".format(self.defense)
 
 class Cell:
 	def __init__(self, dungeon, x, y, tile):
