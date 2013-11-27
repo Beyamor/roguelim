@@ -55,12 +55,14 @@ class Cell:
 		return self.tile.is_passable and self.entity is None
 
 class Entity:
-	def __init__(self, glyph, hp=1, base_attack=1):
+	def __init__(self, glyph, hp=1, base_attack=1, name=""):
 		self.glyph		= glyph
 		self.cell		= None
 		self.hp			= hp
 		self.is_alive		= True
 		self.base_attack	= base_attack
+		self.messages		= []
+		self.name		= name
 
 	def __str__(self):
 		return self.glyph
@@ -86,13 +88,19 @@ class Entity:
 		else:
 			self.dungeon.move(self, target_cell)
 
-	def attack(self, target):
-		target.hit(self.base_attack)
+	def send_message(self, message, *args):
+		self.messages.append(message.format(*args))
 
-	def hit(self, damage):
+	def attack(self, target):
+		self.send_message("You attacked {0} for {1} damage", target.name, self.base_attack)
+		target.hit(self, self.base_attack)
+
+	def hit(self, attacker, damage):
+		self.send_message("{0} hit you for {1} damage", attacker.name, damage)
 		self.hp = self.hp - damage
 		if self.hp <= 0 and self.is_alive:
 			self.kill()
+			attacker.send_message("You killed {0}", self.name)
 
 	def kill(self):
 		self.is_alive = False
@@ -104,17 +112,19 @@ class Entity:
 
 class Player(Entity):
 	def __init__(self):
-		Entity.__init__(self, "@", hp=10, base_attack=1)
+		Entity.__init__(self, "@", hp=10, base_attack=1, name="Player")
 
 class Enemy(Entity):
 	def __init__(self):
-		Entity.__init__(self, "E")
+		Entity.__init__(self, "E", name="Enemy")
 
 	def update(self):
 		direction	= random.choice(DIRECTIONS)
 		target_cell	= self.cell.relative(direction)
 		if target_cell and target_cell.is_passable:
 			self.dungeon.move(self, target_cell)
+
+		self.messages = [] # who cares
 
 class Dungeon:
 	def __init__(self):
