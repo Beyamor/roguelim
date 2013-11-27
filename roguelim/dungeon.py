@@ -123,15 +123,18 @@ class Entity:
 		self.messages.append(message.format(*args))
 
 	def attack(self, target):
-		self.send_message("You attacked {0} for {1} damage", target.name, self.base_attack)
 		target.hit(self, self.base_attack)
 
 	def hit(self, attacker, damage):
-		self.send_message("{0} hit you for {1} damage", attacker.name, damage)
 		self.hp = self.hp - damage
 		if self.hp <= 0 and self.is_alive:
+			self.hp = 0
 			self.kill()
-			attacker.send_message("You killed {0}", self.name)
+			attacker.send_message("You killed {0}, dang", self.name)
+			self.send_message("Whoa, {0} killed you", attacker.name)
+		else:
+			attacker.send_message("You attacked {0} for {1} damage", self.name, damage)
+			self.send_message("{0} hit you for {1} damage", attacker.name, damage)
 
 	def kill(self):
 		if not self.is_alive:
