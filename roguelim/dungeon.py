@@ -61,10 +61,6 @@ class Cell:
 			return None
 		return self.dungeon.cells[relx][rely]
 
-	def update(self):
-		if self.entity:
-			self.entity.update()
-
 	def add_item(self, item):
 		self._items.append(item)
 
@@ -79,8 +75,13 @@ class Cell:
 	def items(self):
 		return list(self._items)
 
+eid = 0
 class Entity:
 	def __init__(self, glyph, hp=1, base_attack=1, name="", team=""):
+		global eid
+		eid = eid + 1
+
+		self.eid		= eid
 		self.glyph		= glyph
 		self.cell		= None
 		self.hp			= hp
@@ -174,6 +175,7 @@ class Enemy(Entity):
 
 class Dungeon:
 	def __init__(self):
+		self.entities	= []
 		self.cells	= [[None for y in DUNGEON_YS] for x in DUNGEON_XS]
 		for x in DUNGEON_XS:
 			for y in DUNGEON_YS:
@@ -181,10 +183,12 @@ class Dungeon:
 				self.cells[x][y] = Cell(self, x, y, tile)
 
 		self.player = Player()
+		self.add(self.player)
 		self.place_on_free_cell(self.player)
 
 		for i in range(3):
 			enemy = Enemy()
+			self.add(enemy)
 			self.place_on_free_cell(enemy)
 
 	def place_on_free_cell(self, entity):
@@ -215,18 +219,21 @@ class Dungeon:
 			raise Exception("No free cells available")
 		return random.choice(free_cells)
 
+	def add(self, entity):
+		self.entities.append(entity)
+
 	def remove(self, entity):
 		if entity.cell:
 			entity.cell.entity	= None
 			entity.cell		= None
+		self.entities.remove(entity)
 
 	def update(self):
-		for x in DUNGEON_XS:
-			for y in DUNGEON_YS:
-				self.cells[x][y].update()
+		for entity in list(self.entities):
+			entity.update()
 
 	def __str__(self):
-		s = ""
+		s = "hp: {0} g: {1}\n".format(self.player.hp, self.player.gold)
 		for y in DUNGEON_YS:
 			for x in DUNGEON_XS:
 				s = s + str(self.cells[x][y])
