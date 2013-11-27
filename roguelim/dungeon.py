@@ -100,7 +100,11 @@ class Entity:
 	def can_do_direction_action(self, direction):
 		target_cell = self.cell.relative(direction)
 		if target_cell:
-			return target_cell.entity or target_cell.is_passable
+			if target_cell.entity and target_cell.entity.team != self.team:
+				return True
+			if target_cell.is_passable:
+				return True
+			return False
 		else:
 			return False
 
