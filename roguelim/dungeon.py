@@ -42,13 +42,13 @@ class Cell:
 		self.y		= y
 		self.tile	= tile
 		self.entity	= None
-		self._items	= []
+		self.item	= None
 
 	def __str__(self):
 		if self.entity:
 			return str(self.entity)
-		elif len(self._items) > 0:
-			return str(self._items[-1])
+		elif self.item:
+			return str(self.item)
 		else:
 			return str(self.tile)
 
@@ -62,18 +62,15 @@ class Cell:
 		return self.dungeon.cells[relx][rely]
 
 	def add_item(self, item):
-		self._items.append(item)
+		self.item = item
 
-	def remove_item(self, item):
-		self._items.remove(item)
+	def remove_item(self):
+		self._item = None
 
 	@property
 	def is_passable(self):
 		return self.tile.is_passable and self.entity is None
 
-	@property
-	def items(self):
-		return list(self._items)
 
 eid = 0
 class Entity:
@@ -174,17 +171,17 @@ class Player(Entity):
 		self.gold = 0
 
 	def on_move(self):
-		for item in self.cell.items:
-			if isinstance(item, Gold):
-				self.cell.remove_item(item)
-				self.send_message(random.choice([
-					"You picked up {0} gold, {1}".format(item.value, random.choice([
-						"scrilla",
-						"chedda",
-						"bling"
-						])),
-					"{0} in the bank, yo".format(item.value)
-					]))
+		item = self.cell.item
+		if item and isinstance(item, Gold):
+			self.cell.remove_item()
+			self.send_message(random.choice([
+				"You picked up {0} gold, {1}".format(item.value, random.choice([
+					"scrilla",
+					"chedda",
+					"bling"
+					])),
+				"{0} in the bank, yo".format(item.value)
+				]))
 
 class Enemy(Entity):
 	def __init__(self):
