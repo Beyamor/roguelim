@@ -23,6 +23,18 @@ class Tile:
 WALL_TILE	= Tile("#", False)
 FLOOR_TILE	= Tile("=", True)
 
+class Item:
+	def __init__(self, glyph):
+		self.glyph = glyph
+
+	def __str__(self):
+		return self.glyph
+
+class Gold(Item):
+	def __init__(self, value):
+		Item.__init__(self, "%")
+		self.value = value
+
 class Cell:
 	def __init__(self, dungeon, x, y, tile):
 		self.dungeon	= dungeon
@@ -30,10 +42,13 @@ class Cell:
 		self.y		= y
 		self.tile	= tile
 		self.entity	= None
+		self.items	= []
 
 	def __str__(self):
 		if self.entity:
 			return str(self.entity)
+		elif len(self.items) > 0:
+			return str(self.items[-1])
 		else:
 			return str(self.tile)
 
@@ -49,6 +64,9 @@ class Cell:
 	def update(self):
 		if self.entity:
 			self.entity.update()
+
+	def add_item(self, item):
+		self.items.append(item)
 
 	@property
 	def is_passable(self):
@@ -103,8 +121,15 @@ class Entity:
 			attacker.send_message("You killed {0}", self.name)
 
 	def kill(self):
+		if not self.is_alive:
+			return
+
 		self.is_alive = False
+		self.on_death()
 		self.dungeon.remove(self)
+
+	def on_death(self):
+		pass
 
 	@property
 	def dungeon(self):
@@ -125,6 +150,9 @@ class Enemy(Entity):
 			self.dungeon.move(self, target_cell)
 
 		self.messages = [] # who cares
+
+	def on_death(self):
+		self.cell.add_item(Gold(random.choice([1, 1, 1, 2, 2, 3])))
 
 class Dungeon:
 	def __init__(self):
