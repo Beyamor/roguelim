@@ -13,7 +13,8 @@ DIRECTION_COMMANDS = {
 		'left':		'west'
 		}
 
-WAIT_COMMANDS = ['wait']
+WAIT_COMMANDS	= ['wait']
+VIEW_COMMANDS	= ['view', 'v']
 
 def read(s):
 	return s.strip().lower()
@@ -37,5 +38,7 @@ def process(command, dungeon):
 		return try_moving_player(dungeon, direction)
 	elif command in WAIT_COMMANDS:
 		return wait(dungeon)
+	elif command in VIEW_COMMANDS:
+		return str(dungeon)
 	else:
 		return "Unrecognized command: " + command
