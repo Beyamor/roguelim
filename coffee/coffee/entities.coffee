@@ -1,6 +1,7 @@
 random	= require './random.js'
 util	= require './util.js'
-items		= require './items.js'
+mixins	= require './mixins.js'
+items	= require './items.js'
 
 DIRECTIONS	= util.DIRECTIONS
 
@@ -12,6 +13,15 @@ class Entity
 		@baseAttack	= opts.attack or 1
 		@name		= opts.name
 		@team		= opts.team
+
+		@mixins		= []
+		mixinNames	= opts.mixins or []
+		for name in mixinNames
+			mixin = mixins.get name
+			mixins.apply mixin, this
+			@mixins.push mixin
+		for mixin in @mixins
+			mixin.initialize.call this if mixin.initialize?
 
 	actionsInDirection: (direction) ->
 		actions		= {}
@@ -34,55 +44,6 @@ class Entity
 	performActionInDirection: (direction) ->
 		@performAction(@actionsInDirection direction)
 
-	sendMessage: (message) ->
-		@messages.push message
-
-	clearMessages: ->
-		@messages = []
-
-	attack: (target) ->
-		damage = @baseAttack
-		if @weapon?
-			damage += @weapon.attack
-		target.hit this, damage
-
-	hit: (attacker, damage) ->
-		if @amor?
-			damage = Math.max 0, damage - @armor.defense
-
-		if damage isnt 0
-			@hp -= damage
-			if @hp <= 0 and @isAlive
-				@hp = 0
-				@kill()
-				attacker.sendMessage random.choice [
-					"Dang, you rocked #{@name}'s world",
-					"#{@name} is down for the count",
-					"Snap, you cold murdered #{@name}"
-				]
-				@sendMessage random.choice [
-					"Whoa, #{attacker.name} killed you",
-					"#{attacker.name} killed you, that's messed up",
-					"Dude, #{attacker.name} schooled you"
-				]
-
-			else if @isAlive
-				attacker.sendMessage random.choice [
-					"You whacked #{attacker.name} for #{damage} damage",
-					"You laid #{damage} points of pain on #{@name}"
-				]
-				@sendMessage random.choice [
-					"#{attacker.name} hit your face for #{damage} damage",
-					"#{attacker.name} whooped you for #{damage} damage"
-				]
-		else
-			attacker.sendMessage random.choice [
-				"You did no damage to #{@name}. #{random.choice ["Uh oh", "Oh boy", "Better run"]}"
-			]
-			@sendMessage random.choice [
-				"#{attacker.name} did no damage. Lolz"
-			]
-
 	kill: ->
 		return unless @isAlive
 
@@ -91,10 +52,16 @@ class Entity
 		@dungeon.remove this
 
 	update: ->
-		# do nothing
+		for mixin in @mixins
+			mixin.update.call this if mixin.update?
 
 	render: ->
 		@glyph
+
+	hasMixin: (name) ->
+		for mixin in @mixins
+			return true if mixin.name is name
+		return false
 
 	@properties
 		dungeon:
@@ -107,6 +74,7 @@ class exports.Player extends Entity
 			attack: 1
 			name: "Player"
 			team: "player"
+			mixins: ['attacker', 'defender', 'messageReceiver']
 		@gold = 0
 
 	onMove: ->
@@ -119,10 +87,11 @@ class exports.Enemy extends Entity
 		super "E",
 			name: "Enemy"
 			team: "enemy"
+			mixins: ['attacker', 'defender']
 
 	update: ->
 		@performActionInDirection random.choice DIRECTIONS
-		@clearMessages()
+		super()
 
 	onDeath: ->
 		@cell.addItem random.choice [
