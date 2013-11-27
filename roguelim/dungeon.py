@@ -37,7 +37,7 @@ class Cell:
 
 	@property
 	def is_passable(self):
-		return self.tile.is_passable
+		return self.tile.is_passable and self.entity is None
 
 class Entity:
 	def __init__(self, glyph):
@@ -51,6 +51,10 @@ class Player(Entity):
 	def __init__(self):
 		Entity.__init__(self, "@")
 
+class Enemy(Entity):
+	def __init__(self):
+		Entity.__init__(self, "E")
+
 class Dungeon:
 	def __init__(self):
 		self.cells	= [[None for y in DUNGEON_YS] for x in DUNGEON_XS]
@@ -61,6 +65,10 @@ class Dungeon:
 
 		self.player = Player()
 		self.place_on_free_cell(self.player)
+
+		for i in range(3):
+			enemy = Enemy()
+			self.place_on_free_cell(enemy)
 
 	def place(self, entity, cell):
 		if cell.entity:
