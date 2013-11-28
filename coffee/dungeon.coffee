@@ -20,6 +20,6 @@ class exports.Dungeon
 		@level.update()
 
 	render: ->
-		s = "hp:#{@player.hp} g:#{@player.gold} l:#{@depth}\n"
+		s = "hp:#{@player.hp} g:#{@player.gold}\n"
 		s += @level.render()
 		return s
