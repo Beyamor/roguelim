@@ -143,5 +143,15 @@ exports.construct = (level) ->
 		level.add enemy
 		level.placeOnFreeCell enemy
 
-	exitCell = level.getFreeCell()
+	possibleExitCells = []
+	level.eachCell (x, y, cell) ->
+		return unless cell.tile.isPassable
+		dx = x - playerCell.x
+		dy = y - playerCell.y
+		weight = dx*dx + dy*dy
+		util.log "weight: #{weight}"
+		for i in [0...weight]
+			possibleExitCells.push cell
+
+	exitCell = random.choice possibleExitCells
 	exitCell.exit = true
