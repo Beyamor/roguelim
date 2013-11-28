@@ -93,7 +93,6 @@ class exports.Enemy extends Entity
 			name: name
 			team: "enemy"
 			mixins: ['attacker', 'defender']
-			hp: 100
 
 	update: ->
 		@performActionInDirection random.choice DIRECTIONS
