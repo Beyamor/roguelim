@@ -18,7 +18,7 @@ exports.WALL_TILE	= WALL_TILE	= new Tile "#", false
 exports.FLOOR_TILE	= FLOOR_TILE	= new Tile "~", true
 
 class Cell
-	constructor: (@dungeon, @x, @y, @tile) ->
+	constructor: (@level, @x, @y, @tile) ->
 
 	render: ->
 		if @entity?
@@ -38,7 +38,7 @@ class Cell
 		return null if relX < 0 or relX >= LEVEL_WIDTH or
 				relY < 0 or relY >= LEVEL_HEIGHT
 
-		return @dungeon.cells[relX][relY]
+		return @level.cells[relX][relY]
 
 	addItem: (item) ->
 		throw new Error "Cell already has an item" if @item?

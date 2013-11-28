@@ -40,7 +40,7 @@ class Entity
 		if actions.attack?
 			@hit actions.attack
 		else if actions.move
-			@dungeon.move this, actions.move
+			@level.move this, actions.move
 
 	performActionInDirection: (direction) ->
 		@performAction(@actionsInDirection direction)
@@ -50,7 +50,7 @@ class Entity
 
 		@isAlive = false
 		@onDeath() if @onDeath?
-		@dungeon.remove this
+		@level.remove this
 
 	update: ->
 		for mixin in @mixins
@@ -65,8 +65,8 @@ class Entity
 		return false
 
 	@properties
-		dungeon:
-			get: -> @cell.dungeon
+		level:
+			get: -> @cell.level
 
 class exports.Player extends Entity
 	constructor: () ->
