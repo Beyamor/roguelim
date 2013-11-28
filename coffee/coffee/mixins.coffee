@@ -43,42 +43,21 @@ defmixin 'defender',
 		if @weapon? and @weapon.defense?
 			damage = Math.max 0, damage - @weapon.defense
 
-		if damage isnt 0
-			@hp -= damage
-			if @hp <= 0 and this.isAlive
-				@hp = 0
-				@kill()
-				attacker.sendMessage random.choice [
-					"Dang, you rocked #{@name}'s world",
-					"#{@name} is down for the count",
-					"Snap, you cold murdered #{@name}"
-				] if attacker.is 'messageReceiver'
+		@hp -= damage
+		if @hp <= 0 and this.isAlive
+			@hp = 0
+			@kill()
+			if attacker.is 'messageReceiver'
+				attacker.sendMessage "You killed #{@name}"
+			if this.is 'messageReceiver'
+				@sendMessage "#{attacker.name} killed you"
 
-				@sendMessage random.choice [
-					"Whoa, #{attacker.name} killed you",
-					"#{attacker.name} killed you, that's messed up",
-					"Dude, #{attacker.name} schooled you"
 
-				] if this.is 'messageReceiver'
-
-			else if this.isAlive
-				attacker.sendMessage random.choice [
-					"You whacked #{@name} for #{damage} damage",
-					"You laid #{damage} points of pain on #{@name}"
-				] if attacker.is 'messageReceiver'
-
-				@sendMessage random.choice [
-					"#{attacker.name} hit your face for #{damage} damage",
-					"#{attacker.name} whooped you for #{damage} damage"
-				] if this.is 'messageReceiver'
-		else
-			attacker.sendMessage random.choice [
-				"You did no damage to #{@name}. #{random.choice ["Uh oh", "Oh boy", "Better run"]}"
-			] if attacker.is 'messageReceiver'
-
-			@sendMessage random.choice [
-				"#{attacker.name} did no damage. Lolz"
-			] if this.is 'messageReceiver'
+		else if this.isAlive
+			if attacker.is 'messageReceiver'
+				attacker.sendMessage "You did #{damage} damage to #{@name}"
+			if this.is 'messageReceiver'
+				@sendMessage "#{attacker.name} did #{damage} damage to you"
 
 defmixin 'messageReceiver',
 	initialize: ->

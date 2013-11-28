@@ -14,10 +14,8 @@ class exports.Gold extends Item
 		entity.gold += @value
 		@cell.removeItem()
 
-		entity.sendMessage random.choice [
-			"You picked up #{@value} gold, #{random.choice ["scrilla", "chedda", "bling"]}",
-			"#{@value} in the bank, yo"
-		]
+		if entity.is "messageReceiver"
+			entity.sendMessage "You picked up #{@value} gold"
 
 class exports.Weapon extends Item
 	constructor: ({@minAttack, @maxAttack, @defense}) ->
