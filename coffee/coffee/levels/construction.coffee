@@ -41,12 +41,6 @@ connect = (from, to, level) ->
 		(cell) ->
 			if cell.tile is WALL_TILE then 4 else 1
 
-	s = "path:"
-	for cell in path
-		s += " (#{cell.x}, #{cell.y})"
-		cell.tile = FLOOR_TILE
-	util.log s
-
 exports.construct = (level) ->
 	rooms			= []
 	roomPossibilities	= generateRoomPossibilities()
