@@ -133,6 +133,8 @@ class exports.Level
 
 				neighbourCell = @cells[neighbourX][neighbourY]
 
+				continue if weighting(neighbourCell) is Infinity
+
 				alreadyClosed = false
 				for closedNode in closed
 					if closedNode.cell is neighbourCell
@@ -154,11 +156,7 @@ class exports.Level
 					parent: node
 
 		g = (node) ->
-			result =
-				if node.cell.tile is WALL_TILE
-					4
-				else
-					1
+			result = weighting node.cell
 			if node.parent?
 				result += g(node.parent)
 			return result
@@ -169,7 +167,7 @@ class exports.Level
 			return Math.abs(dx) + Math.abs(dy)
 
 		while true
-			throw new Error "No open nodes" unless open.length > 0
+			return null unless open.length > 0 # no path possible
 
 			minF		= Infinity
 			nextNode	= null

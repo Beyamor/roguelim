@@ -28,3 +28,18 @@ exports.DIRECTION_DELTAS =
 
 exports.log = (s) ->
 	process.stdout.write "#{s}\n"
+
+exports.directionBetween = (start, end) ->
+	dx = end.x - start.x
+	dy = end.y - start.y
+
+	if dx is 0 and dy < 0
+		"north"
+	else if dx > 0 and dy is 0
+		"east"
+	else if dx is 0 and dy > 0
+		"south"
+	else if dx < 0 and dy is 0
+		"west"
+	else
+		throw new Exception "No direction for #{dx}, #{dy}"

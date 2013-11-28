@@ -71,7 +71,7 @@ class Entity
 class exports.Player extends Entity
 	constructor: () ->
 		super "@",
-			hp: 10
+			hp: Infinity#10
 			name: "Player"
 			team: "player"
 			mixins: ['attacker', 'defender', 'messageReceiver']
@@ -95,8 +95,25 @@ class exports.Enemy extends Entity
 			mixins: ['attacker', 'defender']
 
 	update: ->
-		@performActionInDirection random.choice DIRECTIONS
 		super()
+
+		if @level.player? and @level.player.isAlive
+			pathToPlayer = @level.path @cell, @level.player.cell,
+				(cell) =>
+					if cell.tile.isPassable
+						if cell.entity?
+							100 # still try, but, like, don't go this way if you can help it
+						else
+							1
+					else
+						Infinity
+
+		if pathToPlayer? and pathToPlayer.length <= 5
+			[firstCell, secondCell] = pathToPlayer
+			direction = util.directionBetween firstCell, secondCell
+		else
+			direction = random.choice util.DIRECTIONS
+		@performActionInDirection direction
 
 	onDeath: ->
 		@cell.addItem random.choice [

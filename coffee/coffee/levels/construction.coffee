@@ -37,14 +37,15 @@ connect = (from, to, level) ->
 	endY	= Math.floor((to.top + to.bottom) / 2)
 	end	= level.cells[endX][endY]
 
-	path = level.path start, end, (cell) ->
-		if cell.tile is WALL_TILE
-			4
-		else
-			1
+	path = level.path start, end,
+		(cell) ->
+			if cell.tile is WALL_TILE then 4 else 1
 
+	s = "path:"
 	for cell in path
+		s += " (#{cell.x}, #{cell.y})"
 		cell.tile = FLOOR_TILE
+	util.log s
 
 exports.construct = (level) ->
 	rooms			= []
