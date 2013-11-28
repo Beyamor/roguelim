@@ -79,6 +79,9 @@ exit = (dungeon) ->
 	else
 		return "No exit"
 
+help = ->
+	"commands: north, south, east, west, wait, look, player, equip, exit"
+
 exports.process = (command, dungeon) ->
 	if DIRECTION_COMMANDS[command]?
 		direction = DIRECTION_COMMANDS[command]
@@ -93,5 +96,7 @@ exports.process = (command, dungeon) ->
 		return equip(dungeon)
 	else if command is "exit"
 		return exit(dungeon)
+	else if command is "help"
+		return help()
 	else
 		return "Unrecognized command: #{command}"
