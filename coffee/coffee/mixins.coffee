@@ -33,7 +33,7 @@ defmixin 'attacker',
 		if @weapon? and @weapon.attack?
 			damage += @weapon.attack
 		if @armor? and @armor.attack?
-			attack += @armor.attack
+			damage += @armor.attack
 		target.takeHit this, damage
 
 defmixin 'defender',
