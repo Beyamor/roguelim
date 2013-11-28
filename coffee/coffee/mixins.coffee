@@ -30,14 +30,18 @@ defmixin 'attacker',
 
 	hit: (target) ->
 		damage = @attack
-		if @weapon?
+		if @weapon? and @weapon.attack?
 			damage += @weapon.attack
+		if @armor? and @armor.attack?
+			attack += @armor.attack
 		target.takeHit this, damage
 
 defmixin 'defender',
 	takeHit: (attacker, damage) ->
-		if @amor?
+		if @armor? and @armor.defense?
 			damage = Math.max 0, damage - @armor.defense
+		if @weapon? and @weapon.defense?
+			damage = Math.max 0, damage - @weapon.defense
 
 		if damage isnt 0
 			@hp -= damage
