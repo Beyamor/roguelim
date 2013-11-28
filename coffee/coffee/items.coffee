@@ -12,7 +12,7 @@ class exports.Gold extends Item
 
 	onTouch: (entity) ->
 		entity.gold += @value
-		@cell.removeItem()
+		@cell.removeItem this
 
 		if entity.is "messageReceiver"
 			entity.sendMessage "You picked up #{@value} gold"

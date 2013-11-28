@@ -1,6 +1,7 @@
 util		= require './util.js'
 random		= require './random.js'
 entities	= require './entities.js'
+items		= require './items.js'
 
 exports.LEVEL_WIDTH	= LEVEL_WIDTH		= 10
 exports.LEVEL_HEIGHT	= LEVEL_HEIGHT		= 10
@@ -19,12 +20,13 @@ exports.FLOOR_TILE	= FLOOR_TILE	= new Tile "~", true
 
 class Cell
 	constructor: (@level, @x, @y, @tile) ->
+		@items = []
 
 	render: ->
 		if @entity?
 			@entity.render()
-		else if @item?
-			@item.render()
+		else if @items.length isnt 0
+			@items[@items.length-1].render()
 		else if @exit?
 			">"
 		else
@@ -41,14 +43,21 @@ class Cell
 		return @level.cells[relX][relY]
 
 	addItem: (item) ->
-		throw new Error "Cell already has an item" if @item?
-		@item		= item
-		item.cell	= this
+		needsToBeAdded  = true
+		if item instanceof items.Gold
+			for existingItem in @items
+				if existingItem instanceof items.Gold
+					existingItem.value += item.value
+					needsToBeAdded = false
+					break
 
-	removeItem: ->
-		if @item?
-			@item.cell	= null
-			@item		= null
+		if needsToBeAdded
+			@items.push item = item
+			item.cell = this
+
+	removeItem: (item) ->
+		@items.remove item
+		item.cell = null
 
 	@properties
 		isPassable:
