@@ -149,7 +149,6 @@ exports.construct = (level) ->
 		dx = x - playerCell.x
 		dy = y - playerCell.y
 		weight = dx*dx + dy*dy
-		util.log "weight: #{weight}"
 		for i in [0...weight]
 			possibleExitCells.push cell
 
