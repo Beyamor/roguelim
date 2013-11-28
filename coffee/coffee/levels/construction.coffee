@@ -73,7 +73,11 @@ connect = (from, to, level) ->
 				parent: node
 
 	g = (node) ->
-		result = node.cell.weight
+		result =
+			if node.cell.tile is WALL_TILE
+				4
+			else
+				1
 		if node.parent?
 			result += g(node.parent)
 		return result
@@ -109,9 +113,6 @@ connect = (from, to, level) ->
 		pathNode = pathNode.parent
 
 exports.construct = (level) ->
-	level.eachCell (x, y, cell) ->
-		cell.weight = 5
-
 	rooms			= []
 	roomPossibilities	= generateRoomPossibilities()
 	while roomPossibilities.length > 0
@@ -126,8 +127,7 @@ exports.construct = (level) ->
 	for room in rooms
 		for x in [room.left..room.right]
 			for y in [room.top..room.bottom]
-				level.cells[x][y].tile		= FLOOR_TILE
-				level.cells[x][y].weight	= 1
+				level.cells[x][y].tile = FLOOR_TILE
 
 	for roomIndex in [0...rooms.length]
 		firstRoom	= rooms[roomIndex]
