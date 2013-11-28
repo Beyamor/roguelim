@@ -66,3 +66,7 @@ defmixin 'messageReceiver',
 
 	sendMessage: (message) ->
 		@messages.push message
+
+defmixin 'goldHolder',
+	initialize: ->
+		defaults this, gold: 0

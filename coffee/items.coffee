@@ -11,11 +11,12 @@ class exports.Gold extends Item
 		super "%"
 
 	onTouch: (entity) ->
-		entity.gold += @value
-		@cell.removeItem this
+		if entity.is 'goldHolder'
+			entity.gold += @value
+			@cell.removeItem this
 
-		if entity.is "messageReceiver"
-			entity.sendMessage "You picked up #{@value} gold"
+			if entity.is "messageReceiver"
+				entity.sendMessage "You picked up #{@value} gold"
 
 class exports.Weapon extends Item
 	constructor: ({@minAttack, @maxAttack, @defense}) ->

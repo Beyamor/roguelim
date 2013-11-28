@@ -74,10 +74,14 @@ class exports.Player extends Entity
 			hp: Infinity#10
 			name: "Player"
 			team: "player"
-			mixins: ['attacker', 'defender', 'messageReceiver']
+			mixins: [
+				'attacker'
+				'defender'
+				'messageReceiver'
+				'goldHolder'
+			]
 
 		@weapon = new items.Weapon.create()
-		@gold = 0
 
 	onMove: ->
 		for item in @cell.items
