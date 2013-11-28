@@ -4,6 +4,7 @@ stdin	= process.stdin
 stdout	= process.stdout
 
 dungeon = new d.Dungeon
+		enemyNames: ["Red", "Blue", "Green", "Yellow"]
 dungeon.start()
 stdout.write dungeon.render()
 stdout.write "\n"

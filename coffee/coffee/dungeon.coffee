@@ -3,7 +3,7 @@
 {construct: constructLevel}	= require './levels/construction.js'
 
 class exports.Dungeon
-	constructor: ->
+	constructor: ({@enemyNames}) ->
 		@player	= new Player
 
 	start: ->

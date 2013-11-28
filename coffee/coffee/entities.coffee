@@ -86,9 +86,9 @@ class exports.Player extends Entity
 			@sendMessage "You found the exit"
 
 class exports.Enemy extends Entity
-	constructor: () ->
+	constructor: (name) ->
 		super "E",
-			name: "Enemy"
+			name: name
 			team: "enemy"
 			mixins: ['attacker', 'defender']
 
