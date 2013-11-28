@@ -26,10 +26,10 @@ defaults = (entity, props) ->
 defmixin 'attacker',
 	initialize: ->
 		defaults this,
-			baseAttack: 1
+			attack: 1
 
-	attack: (target) ->
-		damage = @baseAttack
+	hit: (target) ->
+		damage = @attack
 		if @weapon?
 			damage += @weapon.attack
 		target.takeHit this, damage

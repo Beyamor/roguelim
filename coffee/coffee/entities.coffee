@@ -38,7 +38,7 @@ class Entity
 
 	performAction: (actions) ->
 		if actions.attack?
-			@attack actions.attack
+			@hit actions.attack
 		else if actions.move
 			@dungeon.move this, actions.move
 
