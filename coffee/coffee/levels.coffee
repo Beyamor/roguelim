@@ -14,8 +14,8 @@ class Tile
 	render: ->
 		@glyph
 
-WALL_TILE	= new Tile "#", false
-FLOOR_TILE	= new Tile "=", true
+exports.WALL_TILE	= WALL_TILE	= new Tile "#", false
+exports.FLOOR_TILE	= FLOOR_TILE	= new Tile "=", true
 
 class Cell
 	constructor: (@dungeon, @x, @y, @tile) ->
@@ -60,13 +60,7 @@ class exports.Level
 		for x in LEVEL_XS
 			@cells.push []
 			for y in LEVEL_YS
-				tile = random.choice [WALL_TILE, FLOOR_TILE, FLOOR_TILE, FLOOR_TILE]
-				@cells[x].push new Cell this, x, y, tile
-
-		for i in [0...3]
-			enemy = new entities.Enemy
-			@add enemy
-			@placeOnFreeCell enemy
+				@cells[x].push new Cell this, x, y, WALL_TILE
 
 	placeOnFreeCell: (entity) ->
 		@move entity, @getFreeCell()
@@ -84,13 +78,15 @@ class exports.Level
 		entity.cell = newCell
 		entity.onMove() if entity.onMove?
 
-	getFreeCell: ->
-		freeCells = []
+	eachCell: (f) ->
 		for x in LEVEL_XS
 			for y in LEVEL_YS
-				cell = @cells[x][y]
-				if cell.isPassable
-					freeCells.push cell
+				f x, y, @cells[x][y]
+
+	getFreeCell: ->
+		freeCells = []
+		@eachCell (x, y, cell) ->
+			freeCells.push(cell) if cell.isPassable
 
 		if freeCells.length is 0
 			throw new Error "No free cells available"
