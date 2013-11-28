@@ -23,4 +23,5 @@ exports.DIRECTION_DELTAS =
 	south:	[0, 1]
 	west:	[-1, 0]
 
-
+exports.log = (s) ->
+	process.stdout.write "#{s}\n"

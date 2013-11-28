@@ -2,8 +2,8 @@ util		= require './util.js'
 random		= require './random.js'
 entities	= require './entities.js'
 
-LEVEL_WIDTH		= 10
-LEVEL_HEIGHT		= 10
+exports.LEVEL_WIDTH	= LEVEL_WIDTH		= 10
+exports.LEVEL_HEIGHT	= LEVEL_HEIGHT		= 10
 LEVEL_XS		= [0...LEVEL_WIDTH]
 LEVEL_YS		= [0...LEVEL_HEIGHT]
 DIRECTION_DELTAS	= util.DIRECTION_DELTAS
