@@ -39,14 +39,22 @@ class exports.Weapon extends Item
 
 	@create: ->
 		new exports.Weapon
-			minAttack: 1
-			maxAttack: 2
-			defense: 1
+			minAttack:	random.choice [1, 1, 2]
+			maxAttack:	random.choice [2, 2, 3]
+			defense:	random.choice [0, 0, 1]
 	
 class exports.Armor extends Item
-	constructor: (@defense) ->
+	constructor: ({@defense, @attack}) ->
 		super "k"
-		@description = "+#{@defense} armor"
+		@description = ""
+		if @attack? and @attack isnt 0
+			@description += "#{@attack}str "
+		@description += "#{@defense}def armor"
 
 	onTouch: (entity) ->
 		entity.sendMessage "You see some #{@description}"
+
+	@create: ->
+		new exports.Armor
+			defense:	random.choice [1, 1, 2]
+			attack:		random.choice [0, 0, 1]

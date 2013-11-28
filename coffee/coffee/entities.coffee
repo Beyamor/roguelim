@@ -102,5 +102,5 @@ class exports.Enemy extends Entity
 		@cell.addItem random.choice [
 			new items.Gold(random.choice [1, 1, 1, 2, 2, 3]),
 			new items.Weapon.create()
-			new items.Armor(random.choice [1, 1, 2])
+			new items.Armor.create()
 		]
