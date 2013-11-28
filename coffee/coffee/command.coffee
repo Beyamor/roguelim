@@ -52,6 +52,14 @@ showPlayer = ({player}) ->
 equip = (dungeon, which) ->
 	player = dungeon.player
 
+	if which?
+		which = Number(which) - 1
+	else
+		if player.cell.items.length is 1
+			which = 0
+		else
+			return "Equip which?"
+
 	item = player.cell.items[which]
 	return "#{which} isn't an option" unless item?
 
@@ -105,11 +113,7 @@ exports.process = ([command, args...], dungeon) ->
 	else if command is "player"
 		return showPlayer(dungeon)
 	else if command is "equip"
-		if args.length isnt 1
-			return "Equip which?"
-		else
-			which = Number(args[0]) - 1
-			return equip(dungeon, which)
+		return equip(dungeon, args[0])
 	else if command is "items"
 		return showItems(dungeon)
 	else if command is "exit"
