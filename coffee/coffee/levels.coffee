@@ -115,3 +115,82 @@ class exports.Level
 			s += "\n" unless y is LEVEL_HEIGHT - 1
 
 		return s
+
+	path: (start, end, weighting) ->
+		open	= [cell: start]
+		closed	= []
+
+		addNeighbours = (node) =>
+			for direction, delta of util.DIRECTION_DELTAS
+				[dx, dy]	= delta
+				neighbourX	= node.cell.x + dx
+				neighbourY	= node.cell.y + dy
+
+				continue unless	neighbourX >= 0 and
+						neighbourX < LEVEL_WIDTH and
+						neighbourY >= 0 and
+						neighbourY < LEVEL_HEIGHT
+
+				neighbourCell = @cells[neighbourX][neighbourY]
+
+				alreadyClosed = false
+				for closedNode in closed
+					if closedNode.cell is neighbourCell
+						alreadyClosed = true
+						break
+				continue if alreadyClosed
+
+				alreadyOpen = false
+				for openNode in open
+					if openNode.cell is neighbourCell
+						alreadyOpen = true
+						if g(node) < g(openNode.parent)
+							openNode.parent = node
+						break
+				continue if alreadyOpen
+
+				open.push
+					cell: neighbourCell
+					parent: node
+
+		g = (node) ->
+			result =
+				if node.cell.tile is WALL_TILE
+					4
+				else
+					1
+			if node.parent?
+				result += g(node.parent)
+			return result
+
+		h = (node) ->
+			dx = end.x - node.cell.x
+			dy = end.y - node.cell.y
+			return Math.abs(dx) + Math.abs(dy)
+
+		while true
+			throw new Error "No open nodes" unless open.length > 0
+
+			minF		= Infinity
+			nextNode	= null
+			for node in open
+				f = g(node) + h(node)
+				if f < minF
+					minF		= f
+					nextNode	= node
+
+			open.remove nextNode
+			closed.push nextNode
+
+			if nextNode.cell is end
+				finalNode = nextNode
+				break
+			else
+				addNeighbours nextNode
+
+		path = []
+		pathNode = finalNode
+		while pathNode?
+			path.unshift pathNode.cell
+			pathNode = pathNode.parent
+		return path
