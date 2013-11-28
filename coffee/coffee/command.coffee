@@ -90,7 +90,7 @@ exit = (dungeon) ->
 		return "No exit"
 
 help = ->
-	"commands: north, south, east, west, wait, look, player, equip {which}, exit, items"
+	"commands:\nnorth\nsouth\neast\nwest\nshow {dungeon|player|items}\nequip {which}\nexit\n"
 
 showItems = (dungeon) ->
 	cellItems = dungeon.player.cell.items
@@ -108,14 +108,22 @@ exports.process = ([command, args...], dungeon) ->
 		return doDirectionAction dungeon, direction
 	else if command is "wait"
 		return wait(dungeon)
-	else if command is "look"
-		return dungeon.render()
-	else if command is "player"
-		return showPlayer(dungeon)
+	else if command is "show"
+		what = args[0]
+		if what?
+			return switch what
+				when "dungeon"
+					dungeon.render()
+				when "player"
+					showPlayer(dungeon)
+				when "items"
+					showItems(dungeon)
+				else
+					"Don't know how to show #{what}"
+		else
+			return "Show what?"
 	else if command is "equip"
 		return equip(dungeon, args[0])
-	else if command is "items"
-		return showItems(dungeon)
 	else if command is "exit"
 		return exit(dungeon)
 	else if command is "help"
