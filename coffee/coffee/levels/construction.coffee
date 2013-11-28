@@ -134,6 +134,10 @@ exports.construct = (level) ->
 		secondRoom	= rooms[(roomIndex + 1) % rooms.length]
 		connect firstRoom, secondRoom, level
 
+	playerCell = level.getFreeCell()
+	level.add level.player
+	level.move level.player, playerCell
+
 	for i in [0...3]
 		enemy = new entities.Enemy
 		level.add enemy

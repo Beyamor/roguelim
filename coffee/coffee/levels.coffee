@@ -56,7 +56,7 @@ class Cell
 				@tile.isPassable and not @entity?
 
 class exports.Level
-	constructor: (@dungeon) ->
+	constructor: (@dungeon, @player) ->
 		@entities = []
 		@cells = []
 		for x in LEVEL_XS

@@ -6,11 +6,8 @@ class exports.Dungeon
 	constructor: ->
 		@player	= new Player
 
-		@level	= new Level this
+		@level	= new Level this, @player
 		constructLevel @level
-
-		@level.add @player
-		@level.placeOnFreeCell @player
 
 	update: ->
 		@level.update()
