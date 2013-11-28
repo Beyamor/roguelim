@@ -44,6 +44,11 @@ defmixin 'defender',
 			damage = Math.max 0, damage - @weapon.defense
 
 		@hp -= damage
+		if attacker.is 'messageReceiver'
+			attacker.sendMessage "You did #{damage} damage to #{@name}"
+		if this.is 'messageReceiver'
+			@sendMessage "#{attacker.name} did #{damage} damage to you"
+
 		if @hp <= 0 and this.isAlive
 			@hp = 0
 			@kill()
@@ -51,13 +56,6 @@ defmixin 'defender',
 				attacker.sendMessage "You killed #{@name}"
 			if this.is 'messageReceiver'
 				@sendMessage "#{attacker.name} killed you"
-
-
-		else if this.isAlive
-			if attacker.is 'messageReceiver'
-				attacker.sendMessage "You did #{damage} damage to #{@name}"
-			if this.is 'messageReceiver'
-				@sendMessage "#{attacker.name} did #{damage} damage to you"
 
 defmixin 'messageReceiver',
 	initialize: ->
