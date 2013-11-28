@@ -74,9 +74,10 @@ equip = (dungeon) ->
 
 exit = (dungeon) ->
 	if dungeon.player.cell.exit?
-		"Exiting"
+		dungeon.exitLevel()
+		return dungeon.render()
 	else
-		"No exit"
+		return "No exit"
 
 exports.process = (command, dungeon) ->
 	if DIRECTION_COMMANDS[command]?

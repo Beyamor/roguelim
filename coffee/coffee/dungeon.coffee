@@ -6,7 +6,12 @@ class exports.Dungeon
 	constructor: ->
 		@player	= new Player
 
-		@level	= new Level this, @player
+	start: ->
+		@level = new Level this, @player
+		constructLevel @level
+
+	exitLevel: ->
+		@level = new Level this, @player
 		constructLevel @level
 
 	update: ->
