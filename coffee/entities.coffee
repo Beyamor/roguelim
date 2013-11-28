@@ -84,10 +84,6 @@ class exports.Player extends Entity
 		@weapon = new items.Weapon.create()
 
 	onMove: ->
-		for item in @cell.items
-			if item.onTouch?
-				item.onTouch this
-
 		numberOfItems = @cell.items.length
 		if numberOfItems is 1
 			@sendMessage "You see an item"

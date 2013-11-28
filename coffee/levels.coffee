@@ -85,6 +85,9 @@ class exports.Level
 
 		if newCell?
 			newCell.entity = entity
+			for item in newCell.items
+				if item.onTouch?
+					item.onTouch entity
 
 		entity.cell = newCell
 		entity.onMove() if entity.onMove?
