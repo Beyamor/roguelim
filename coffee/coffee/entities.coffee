@@ -28,8 +28,9 @@ class Entity
 		targetCell	= @cell.relative direction
 
 		if targetCell?
-			if targetCell.entity? and targetCell.entity.team isnt @team
-				actions.attack = targetCell.entity
+			enemy = targetCell.entity
+			if enemy? and enemy.is('defender') and enemy.team isnt @team and this.is('attacker')
+				actions.attack = enemy
 			if targetCell.isPassable
 				actions.move = targetCell
 
