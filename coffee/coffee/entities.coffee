@@ -82,6 +82,9 @@ class exports.Player extends Entity
 		if item? and item.onTouch?
 			item.onTouch this
 
+		if @cell.exit?
+			@sendMessage "You found the exit"
+
 class exports.Enemy extends Entity
 	constructor: () ->
 		super "E",

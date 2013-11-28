@@ -138,3 +138,6 @@ exports.construct = (level) ->
 		enemy = new entities.Enemy
 		level.add enemy
 		level.placeOnFreeCell enemy
+
+	exitCell = level.getFreeCell()
+	exitCell.exit = true

@@ -6,7 +6,7 @@ class exports.Dungeon
 	constructor: ->
 		@player	= new Player
 
-		@level	= new Level
+		@level	= new Level this
 		constructLevel @level
 
 		@level.add @player

@@ -25,6 +25,8 @@ class Cell
 			@entity.render()
 		else if @item?
 			@item.render()
+		else if @exit?
+			">"
 		else
 			@tile.render()
 
@@ -54,7 +56,7 @@ class Cell
 				@tile.isPassable and not @entity?
 
 class exports.Level
-	constructor: () ->
+	constructor: (@dungeon) ->
 		@entities = []
 		@cells = []
 		for x in LEVEL_XS

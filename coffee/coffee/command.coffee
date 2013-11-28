@@ -72,6 +72,12 @@ equip = (dungeon) ->
 	else
 		return "Nothing to equip"
 
+exit = (dungeon) ->
+	if dungeon.player.cell.exit?
+		"Exiting"
+	else
+		"No exit"
+
 exports.process = (command, dungeon) ->
 	if DIRECTION_COMMANDS[command]?
 		direction = DIRECTION_COMMANDS[command]
@@ -84,5 +90,7 @@ exports.process = (command, dungeon) ->
 		return showPlayer(dungeon)
 	else if command is "equip"
 		return equip(dungeon)
+	else if command is "exit"
+		return exit(dungeon)
 	else
 		return "Unrecognized command: #{command}"
