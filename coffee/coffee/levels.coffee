@@ -15,7 +15,7 @@ class Tile
 		@glyph
 
 exports.WALL_TILE	= WALL_TILE	= new Tile "#", false
-exports.FLOOR_TILE	= FLOOR_TILE	= new Tile " ", true
+exports.FLOOR_TILE	= FLOOR_TILE	= new Tile "~", true
 
 class Cell
 	constructor: (@dungeon, @x, @y, @tile) ->
