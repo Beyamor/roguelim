@@ -75,6 +75,8 @@ class exports.Player extends Entity
 			name: "Player"
 			team: "player"
 			mixins: ['attacker', 'defender', 'messageReceiver']
+
+		@weapon = new items.Weapon.create()
 		@gold = 0
 
 	onMove: ->
@@ -91,6 +93,7 @@ class exports.Enemy extends Entity
 			name: name
 			team: "enemy"
 			mixins: ['attacker', 'defender']
+			hp: 100
 
 	update: ->
 		@performActionInDirection random.choice DIRECTIONS
@@ -99,6 +102,6 @@ class exports.Enemy extends Entity
 	onDeath: ->
 		@cell.addItem random.choice [
 			new items.Gold(random.choice [1, 1, 1, 2, 2, 3]),
-			new items.Weapon(random.choice [1, 1, 2, 2]),
+			new items.Weapon.create()
 			new items.Armor(random.choice [1, 1, 2])
 		]
