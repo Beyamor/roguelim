@@ -40,6 +40,8 @@ connect = (from, to, level) ->
 	path = level.path start, end,
 		(cell) ->
 			if cell.tile is WALL_TILE then 4 else 1
+	for cell in path
+		cell.tile = FLOOR_TILE
 
 exports.construct = (level) ->
 	rooms			= []

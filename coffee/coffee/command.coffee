@@ -16,7 +16,7 @@ DIRECTION_COMMANDS =
 	left:	'west'
 
 exports.read = (s) ->
-	s.trim().toLowerCase()
+	s.trim().toLowerCase().split(/\s+/)
 
 renderUpdate = (dungeon) ->
 	s = dungeon.render()
@@ -49,11 +49,13 @@ showPlayer = ({player}) ->
 	s += "\nw: #{if player.weapon? then player.weapon.description else "None"}"
 	s += "\na: #{if player.armor? then player.armor.description else "None"}"
 
-equip = (dungeon) ->
-	player	= dungeon.player
-	item	= player.cell.item
+equip = (dungeon, which) ->
+	player = dungeon.player
 
-	if item? and item instanceof items.Weapon
+	item = player.cell.items[which]
+	return "#{which} isn't an option" unless which?
+
+	if item instanceof items.Weapon
 		oldWeapon = player.weapon
 		item.cell.removeItem()
 		player.weapon = item
@@ -61,7 +63,7 @@ equip = (dungeon) ->
 			player.cell.addItem oldWeapon
 		return updatedDungeon dungeon
 
-	else if item? and item instanceof items.Armor
+	else if item instanceof items.Armor
 		oldArmor = player.armor
 		item.cell.removeItem()
 		player.armor = item
@@ -70,7 +72,7 @@ equip = (dungeon) ->
 		return updatedDungeon dungeon
 
 	else
-		return "Nothing to equip"
+		return "Can't equip #{item.description}"
 
 exit = (dungeon) ->
 	if dungeon.player.cell.exit?
@@ -80,9 +82,19 @@ exit = (dungeon) ->
 		return "No exit"
 
 help = ->
-	"commands: north, south, east, west, wait, look, player, equip, exit"
+	"commands: north, south, east, west, wait, look, player, equip {which}, exit, items"
 
-exports.process = (command, dungeon) ->
+showItems = (dungeon) ->
+	items = dungeon.player.cell.items
+	return "None" if items.length is 0
+
+	s = ""
+	for i in [0...items.length]
+		s += "\n" if s isnt 0
+		s += "#{i+1}: #{items[i].description}"
+	return s
+
+exports.process = ([command, args...], dungeon) ->
 	if DIRECTION_COMMANDS[command]?
 		direction = DIRECTION_COMMANDS[command]
 		return doDirectionAction dungeon, direction
@@ -93,7 +105,10 @@ exports.process = (command, dungeon) ->
 	else if command is "player"
 		return showPlayer(dungeon)
 	else if command is "equip"
-		return equip(dungeon)
+		which = Number(args[0]) - 1
+		return equip(dungeon, which)
+	else if command is "items"
+		return showItems(dungeon)
 	else if command is "exit"
 		return exit(dungeon)
 	else if command is "help"

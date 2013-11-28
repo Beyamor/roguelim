@@ -118,7 +118,7 @@ class exports.Enemy extends Entity
 
 	onDeath: ->
 		@cell.addItem random.choice [
-			new items.Gold(random.choice [1, 1, 1, 2, 2, 3])
-			#new items.Weapon.create()
+			#new items.Gold(random.choice [1, 1, 1, 2, 2, 3])
+			new items.Weapon.create()
 			#new items.Armor.create()
 		]

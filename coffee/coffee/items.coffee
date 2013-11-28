@@ -31,7 +31,7 @@ class exports.Weapon extends Item
 		@description += " sword"
 		
 	onTouch: (entity) ->
-		entity.sendMessage "You see a #{@description}"
+		entity.sendMessage "You see a weapon"
 
 	@properties
 		attack:
@@ -52,7 +52,7 @@ class exports.Armor extends Item
 		@description += "#{@defense}def armor"
 
 	onTouch: (entity) ->
-		entity.sendMessage "You see some #{@description}"
+		entity.sendMessage "You see some armor"
 
 	@create: ->
 		new exports.Armor
