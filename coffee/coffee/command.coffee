@@ -53,11 +53,11 @@ equip = (dungeon, which) ->
 	player = dungeon.player
 
 	item = player.cell.items[which]
-	return "#{which} isn't an option" unless which?
+	return "#{which} isn't an option" unless item?
 
 	if item instanceof items.Weapon
 		oldWeapon = player.weapon
-		item.cell.removeItem()
+		item.cell.removeItem item
 		player.weapon = item
 		if oldWeapon?
 			player.cell.addItem oldWeapon
@@ -65,7 +65,7 @@ equip = (dungeon, which) ->
 
 	else if item instanceof items.Armor
 		oldArmor = player.armor
-		item.cell.removeItem()
+		item.cell.removeItem item
 		player.armor = item
 		if oldArmor?
 			player.cell.addItem oldArmor
@@ -85,13 +85,13 @@ help = ->
 	"commands: north, south, east, west, wait, look, player, equip {which}, exit, items"
 
 showItems = (dungeon) ->
-	items = dungeon.player.cell.items
-	return "None" if items.length is 0
+	cellItems = dungeon.player.cell.items
+	return "None" if cellItems.length is 0
 
 	s = ""
-	for i in [0...items.length]
-		s += "\n" if s isnt 0
-		s += "#{i+1}: #{items[i].description}"
+	for i in [0...cellItems.length]
+		s += "\n" if i isnt 0
+		s += "#{i+1}: #{cellItems[i].description}"
 	return s
 
 exports.process = ([command, args...], dungeon) ->
@@ -105,8 +105,11 @@ exports.process = ([command, args...], dungeon) ->
 	else if command is "player"
 		return showPlayer(dungeon)
 	else if command is "equip"
-		which = Number(args[0]) - 1
-		return equip(dungeon, which)
+		if args.length isnt 1
+			return "Equip which?"
+		else
+			which = Number(args[0]) - 1
+			return equip(dungeon, which)
 	else if command is "items"
 		return showItems(dungeon)
 	else if command is "exit"
