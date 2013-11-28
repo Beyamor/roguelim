@@ -30,9 +30,6 @@ class exports.Weapon extends Item
 			@description += " #{@defense}def"
 		@description += " sword"
 		
-	onTouch: (entity) ->
-		entity.sendMessage "You see a weapon"
-
 	@properties
 		attack:
 			get: -> random.intInRange @minAttack, (@maxAttack + 1)
@@ -50,9 +47,6 @@ class exports.Armor extends Item
 		if @attack? and @attack isnt 0
 			@description += "#{@attack}str "
 		@description += "#{@defense}def armor"
-
-	onTouch: (entity) ->
-		entity.sendMessage "You see some armor"
 
 	@create: ->
 		new exports.Armor

@@ -80,10 +80,15 @@ class exports.Player extends Entity
 		@gold = 0
 
 	onMove: ->
-		item = @cell.item
 		for item in @cell.items
 			if item.onTouch?
 				item.onTouch this
+
+		numberOfItems = @cell.items.length
+		if numberOfItems is 1
+			@sendMessage "You see an item"
+		else if numberOfItems > 1
+			@sendMessage "You see some items"
 
 		if @cell.exit?
 			@sendMessage "You found the exit"
