@@ -8,6 +8,9 @@ Array::remove = (el) ->
 	@splice index, 1
 	return el
 
+Array::contains = (el) ->
+	@indexOf(el) isnt -1
+
 Object.defineProperty Array.prototype, 'clone'
 	get: -> @concat()
 
