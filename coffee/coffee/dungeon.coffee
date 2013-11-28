@@ -7,10 +7,12 @@ class exports.Dungeon
 		@player	= new Player
 
 	start: ->
-		@level = new Level this, @player
+		@depth	= 1
+		@level	= new Level this, @player
 		constructLevel @level
 
 	exitLevel: ->
+		++@depth
 		@level = new Level this, @player
 		constructLevel @level
 
@@ -18,6 +20,6 @@ class exports.Dungeon
 		@level.update()
 
 	render: ->
-		s = "hp: #{@player.hp} g: #{@player.gold}\n"
+		s = "hp:#{@player.hp} g:#{@player.gold} l:#{@depth}\n"
 		s += @level.render()
 		return s
