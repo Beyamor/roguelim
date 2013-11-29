@@ -3,8 +3,9 @@
 {construct: constructLevel}	= require './levels/construction.js'
 
 class exports.Dungeon
-	constructor: ({@enemyNames}) ->
+	constructor: ({@enemyNames, @depth}) ->
 		@player	= new Player
+		@depth or= 1
 
 	start: ->
 		@depth	= 1
@@ -28,3 +29,8 @@ class exports.Dungeon
 		depth:	@depth
 		level:	@level.toJSON()
 		player:	@level.entities.indexOf @player
+
+	@read: (json) ->
+		dungeon = new Dungeon json
+		dungeon.level = Level.read json.level, this
+		return dungeon

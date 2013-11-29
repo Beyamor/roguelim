@@ -19,6 +19,9 @@ class Tile
 		glyph:		@glyph
 		isPassable:	@isPassable
 
+	@read: (json) ->
+		new Tile json.glyph, json.isPassable
+
 exports.WALL_TILE	= WALL_TILE	= new Tile "#", false
 exports.FLOOR_TILE	= FLOOR_TILE	= new Tile "~", true
 
@@ -71,6 +74,9 @@ class Cell
 	toJSON: ->
 		tile:	@tile.toJSON()
 		items:	(item.toJSON() for item in @items)
+
+	@read: (json, level, x, y) ->
+		new Cell level, x, y, Tile.read(json.tile)
 
 class exports.Level
 	constructor: (@dungeon, @player) ->
@@ -223,3 +229,12 @@ class exports.Level
 		cells:		cells
 		entities:	(entity.toJSON() for entity in @entities)
 
+
+	@read = (json, dungeon) ->
+		level = new Level dungeon
+
+		for x in LEVEL_XS
+			for y in LEVEL_YS
+				level.cells[x][y] = Cell.read json.cells[x][y], level, x, y
+
+		return level
