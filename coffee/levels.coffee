@@ -74,9 +74,12 @@ class Cell
 	toJSON: ->
 		tile:	@tile.toJSON()
 		items:	(item.toJSON() for item in @items)
+		exit:	@exit
 
 	@read: (json, level, x, y) ->
-		new Cell level, x, y, Tile.read(json.tile)
+		cell = new Cell level, x, y, Tile.read(json.tile)
+		cell.exit = json.exit
+		return cell
 
 class exports.Level
 	constructor: (@dungeon, @player) ->
