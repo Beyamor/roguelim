@@ -26,11 +26,12 @@ class exports.Dungeon
 		return s
 
 	toJSON: ->
-		depth:	@depth
-		level:	@level.toJSON()
+		depth:		@depth
+		level:		@level.toJSON()
+		enemyNames:	@enemyNames
 
 	@read: (json) ->
-		dungeon		= new Dungeon json
-		dungeon.level	= Level.read json.level, dungeon
-		dungeon.player	= dungeon.level.player
+		dungeon			= new Dungeon json
+		dungeon.level		= Level.read json.level, dungeon
+		dungeon.player		= dungeon.level.player
 		return dungeon
