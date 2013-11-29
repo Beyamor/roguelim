@@ -1,5 +1,5 @@
-util	= require './util.js'
-items	= require './items.js'
+util	= require './util'
+items	= require './items'
 
 DIRECTION_COMMANDS =
 	north:	'north'

@@ -1,7 +1,7 @@
-random		= require '../random.js'
-util		= require '../util.js'
-entities	= require '../entities.js'
-{WALL_TILE, FLOOR_TILE, LEVEL_WIDTH, LEVEL_HEIGHT} = require '../levels.js'
+random		= require '../random'
+util		= require '../util'
+entities	= require '../entities'
+{WALL_TILE, FLOOR_TILE, LEVEL_WIDTH, LEVEL_HEIGHT} = require '../levels'
 
 MIN_ROOM_DIM	= 1
 MAX_ROOM_DIM	= 5

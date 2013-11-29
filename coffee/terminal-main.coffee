@@ -1,5 +1,5 @@
-command		= require './command.js'
-{Dungeon}	= require './dungeon.js'
+command		= require './command'
+{Dungeon}	= require './dungeon'
 fs		= require 'fs'
 
 stdin	= process.stdin

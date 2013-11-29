@@ -1,7 +1,7 @@
 Twit		= require "twit"
-config		= require "./twitter-config.js"
-c		= require './command.js'
-{Dungeon}	= require './dungeon.js'
+config		= require "./twitter-config"
+c		= require './command'
+{Dungeon}	= require './dungeon'
 fs		= require 'fs'
 
 TWITTER_NAME	= "@#{config.account}"

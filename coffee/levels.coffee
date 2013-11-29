@@ -1,7 +1,7 @@
-util		= require './util.js'
-random		= require './random.js'
-entities	= require './entities.js'
-items		= require './items.js'
+util		= require './util'
+random		= require './random'
+entities	= require './entities'
+items		= require './items'
 
 exports.LEVEL_WIDTH	= LEVEL_WIDTH		= 8
 exports.LEVEL_HEIGHT	= LEVEL_HEIGHT		= 6

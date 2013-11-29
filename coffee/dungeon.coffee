@@ -1,6 +1,6 @@
-{Player}	= require './entities.js'
-{Level}		= require './levels.js'
-{construct: constructLevel}	= require './levels/construction.js'
+{Player}	= require './entities'
+{Level}		= require './levels'
+{construct: constructLevel}	= require './levels/construction'
 
 class exports.Dungeon
 	constructor: ({@enemyNames, @depth}) ->

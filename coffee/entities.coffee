@@ -1,7 +1,7 @@
-random	= require './random.js'
-util	= require './util.js'
-mixins	= require './mixins.js'
-items	= require './items.js'
+random	= require './random'
+util	= require './util'
+mixins	= require './mixins'
+items	= require './items'
 
 DIRECTIONS	= util.DIRECTIONS
 

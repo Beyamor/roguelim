@@ -1,4 +1,4 @@
-random	= require './random.js'
+random	= require './random'
 
 class Item
 	constructor: (@glyph) ->
