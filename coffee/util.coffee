@@ -43,3 +43,6 @@ exports.directionBetween = (start, end) ->
 		"west"
 	else
 		throw new Exception "No direction for #{dx}, #{dy}"
+
+exports.isFn = (o) ->
+	typeof(v) is "function"

@@ -11,7 +11,8 @@ stdout.write dungeon.render()
 stdout.write "\n"
 
 json = dungeon.toJSON()
-fs.writeFile '/tmp/dungeon.json', JSON.stringify(json)
+fs.writeFile '/tmp/dungeon.json', JSON.stringify(json), (err) ->
+	console.log err if err?
 
 stdin.resume()
 stdin.setEncoding 'utf8'

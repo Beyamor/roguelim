@@ -8,10 +8,10 @@ DIRECTIONS	= util.DIRECTIONS
 class Entity
 	constructor: (@glyph, opts) ->
 		@isAlive	= true
-		@messages	= []
 		@hp		= opts.hp or 1
 		@name		= opts.name
 		@team		= opts.team
+		@type		= opts.type
 
 		@mixins		= []
 		mixinNames	= opts.mixins or []
@@ -68,12 +68,23 @@ class Entity
 		level:
 			get: -> @cell.level
 
+	toJSON: ->
+		json = {}
+		for k, v of this when not util.isFn v
+			json[k] = v
+
+		if @cell?
+			json.x = @cell.x
+			json.y = @cell.y
+		return json
+
 class exports.Player extends Entity
 	constructor: () ->
 		super "0",
 			hp: Infinity#10
 			name: "Player"
 			team: "player"
+			type: "player"
 			mixins: [
 				'attacker'
 				'defender'
@@ -98,6 +109,7 @@ class exports.Enemy extends Entity
 		super "9",
 			name: name
 			team: "enemy"
+			type: "enemy"
 			mixins: ['attacker', 'defender']
 
 	update: ->

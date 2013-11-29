@@ -220,5 +220,6 @@ class exports.Level
 			for y in LEVEL_YS
 				cells[x].push @cells[x][y].toJSON()
 
-		return\
-			cells: cells
+		cells:		cells
+		entities:	(entity.toJSON() for entity in @entities)
+
