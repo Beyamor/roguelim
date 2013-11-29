@@ -7,9 +7,7 @@ DIRECTIONS	= util.DIRECTIONS
 
 class Entity
 	constructor: (@glyph, opts) ->
-		@isAlive	= true
-		@hp		= opts.hp or 1
-		@name		= opts.name
+		{@isAlive, @hp, @name, @weapon, @armor} = opts
 		@team or= opts.team
 		@type or= opts.type
 
@@ -100,7 +98,8 @@ class exports.Player extends Entity
 				]
 			, opts)
 
-		@weapon = new items.Weapon.create()
+		unless @weapon
+			@weapon = new items.Weapon.create()
 
 	onMove: ->
 		numberOfItems = @cell.items.length
@@ -150,6 +149,9 @@ class exports.Enemy extends Entity
 		]
 
 exports.read = (json) ->
+	json.weapon	= items.read(json.weapon) if json.weapon?
+	json.armor	= items.read(json.armor) if json.armor?
+
 	switch json.type
 		when "player"
 			new exports.Player json

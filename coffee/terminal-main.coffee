@@ -31,7 +31,5 @@ stdin.resume()
 stdin.setEncoding 'utf8'
 stdin.on 'data', (chunk) ->
 	reloadDungeon ->
-		stdout.write dungeon.render()
+		stdout.write command.process(command.read(chunk), dungeon)
 		stdout.write "\n"
-	#stdout.write command.process(command.read(chunk), dungeon)
-	#stdout.write "\n"
