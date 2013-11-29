@@ -114,9 +114,9 @@ exports.process = ([command, args...], dungeon) ->
 			return switch what
 				when "dungeon"
 					dungeon.render()
-				when "player"
+				when "player", "me"
 					showPlayer(dungeon)
-				when "items"
+				when "item", "items"
 					showItems(dungeon)
 				else
 					"Don't know how to show #{what}"
