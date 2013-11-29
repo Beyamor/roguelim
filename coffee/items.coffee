@@ -8,7 +8,7 @@ class Item
 
 class exports.Gold extends Item
 	constructor: (@value) ->
-		super "%"
+		super "$"
 
 	onTouch: (entity) ->
 		if entity.is 'goldHolder'
@@ -20,7 +20,7 @@ class exports.Gold extends Item
 
 class exports.Weapon extends Item
 	constructor: ({@minAttack, @maxAttack, @defense}) ->
-		super "t"
+		super "1"
 
 		if @minAttack isnt @maxAttack
 			@description = "#{@minAttack}-#{@maxAttack}"
@@ -43,7 +43,7 @@ class exports.Weapon extends Item
 	
 class exports.Armor extends Item
 	constructor: ({@defense, @attack}) ->
-		super "k"
+		super "4"
 		@description = ""
 		if @attack? and @attack isnt 0
 			@description += "#{@attack}str "
