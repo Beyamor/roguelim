@@ -70,7 +70,7 @@ class Entity
 
 class exports.Player extends Entity
 	constructor: () ->
-		super "@",
+		super "0",
 			hp: Infinity#10
 			name: "Player"
 			team: "player"
@@ -95,7 +95,7 @@ class exports.Player extends Entity
 
 class exports.Enemy extends Entity
 	constructor: (name) ->
-		super "E",
+		super "9",
 			name: name
 			team: "enemy"
 			mixins: ['attacker', 'defender']

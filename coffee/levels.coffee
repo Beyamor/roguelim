@@ -85,7 +85,7 @@ class exports.Level
 
 		if newCell?
 			newCell.entity = entity
-			for item in newCell.items
+			for item in newCell.items.clone
 				if item.onTouch?
 					item.onTouch entity
 
