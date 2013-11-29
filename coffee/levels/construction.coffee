@@ -69,12 +69,8 @@ exports.construct = (level) ->
 	level.add level.player
 	level.move level.player, playerCell
 
-	usedNames = []
 	for i in [0...3]
 		name = random.choice level.dungeon.enemyNames
-		while usedNames.contains name
-			name = random.choice level.dungeon.enemyNames
-
 		enemy = new entities.Enemy name: name
 		level.add enemy
 		level.placeOnFreeCell enemy

@@ -47,12 +47,16 @@ myTweets.on "tweet", (tweet) ->
 		fs.mkdirSync "users" unless fs.existsSync "users"
 		fs.mkdirSync "users/#{user}" unless fs.existsSync "users/#{user}"
 
-		dungeon = new Dungeon
-			enemyNames: ["red", "green", "yellow", "blue"]
-		dungeon.start()
+		twitter.get 'friends/list', {screen_name: user, count:200}, (err, {users: friends}) ->
+			if err?
+				console.log err
+			else
+				dungeon = new Dungeon
+					enemyNames: (name for {screen_name: name} in friends)
+				dungeon.start()
 
-		writeDungeon dungeon
-		respond c.process ["show", "dungeon"], dungeon
+				writeDungeon dungeon
+				respond c.process ["show", "dungeon"], dungeon
 	else
 		console.log "processing #{command[0]}"
 
