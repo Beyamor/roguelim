@@ -1,5 +1,6 @@
 command	= require './command.js'
 d	= require './dungeon.js'
+fs	= require 'fs'
 stdin	= process.stdin
 stdout	= process.stdout
 
@@ -8,6 +9,9 @@ dungeon = new d.Dungeon
 dungeon.start()
 stdout.write dungeon.render()
 stdout.write "\n"
+
+json = dungeon.toJSON()
+fs.writeFile '/tmp/dungeon.json', JSON.stringify(json)
 
 stdin.resume()
 stdin.setEncoding 'utf8'

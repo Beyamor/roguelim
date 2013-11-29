@@ -23,3 +23,8 @@ class exports.Dungeon
 		s = "hp:#{@player.hp} g:#{@player.gold}\n"
 		s += @level.render()
 		return s
+
+	toJSON: ->
+		depth:	@depth
+		level:	@level.toJSON()
+		player:	@level.entities.indexOf @player

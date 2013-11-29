@@ -18,6 +18,10 @@ class exports.Gold extends Item
 			if entity.is "messageReceiver"
 				entity.sendMessage "You picked up #{@value} gold"
 
+	toJSON: ->
+		type:	"gold"
+		value:	@value
+
 class exports.Weapon extends Item
 	constructor: ({@minAttack, @maxAttack, @defense}) ->
 		super "1"
@@ -40,6 +44,12 @@ class exports.Weapon extends Item
 			minAttack:	random.choice [1, 1, 2]
 			maxAttack:	random.choice [2, 2, 3]
 			defense:	random.choice [0, 0, 1]
+
+	toJSON: ->
+		type:		'weapon'
+		minAttack:	@minAttack
+		maxAttack:	@maxAttack
+		defense:	@defense
 	
 class exports.Armor extends Item
 	constructor: ({@defense, @attack}) ->
@@ -53,3 +63,8 @@ class exports.Armor extends Item
 		new exports.Armor
 			defense:	random.choice [1, 1, 2]
 			attack:		random.choice [0, 0, 1]
+
+	toJSON: ->
+		type:		'armor'
+		defense:	@defense
+		attack:		@attack

@@ -15,6 +15,10 @@ class Tile
 	render: ->
 		@glyph
 
+	toJSON: ->
+		glyph:		@glyph
+		isPassable:	@isPassable
+
 exports.WALL_TILE	= WALL_TILE	= new Tile "#", false
 exports.FLOOR_TILE	= FLOOR_TILE	= new Tile "~", true
 
@@ -63,6 +67,10 @@ class Cell
 		isPassable:
 			get: ->
 				@tile.isPassable and not @entity?
+
+	toJSON: ->
+		tile:	@tile.toJSON()
+		items:	(item.toJSON() for item in @items)
 
 class exports.Level
 	constructor: (@dungeon, @player) ->
@@ -204,3 +212,13 @@ class exports.Level
 			path.unshift pathNode.cell
 			pathNode = pathNode.parent
 		return path
+
+	toJSON: ->
+		cells = []
+		for x in LEVEL_XS
+			cells.push []
+			for y in LEVEL_YS
+				cells[x].push @cells[x][y].toJSON()
+
+		return\
+			cells: cells
