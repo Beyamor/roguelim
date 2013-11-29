@@ -79,6 +79,7 @@ class Cell
 	@read: (json, level, x, y) ->
 		cell = new Cell level, x, y, Tile.read(json.tile)
 		cell.exit = json.exit
+		cell.items = (items.read itemJSON for itemJSON in json.items)
 		return cell
 
 class exports.Level

@@ -68,3 +68,14 @@ class exports.Armor extends Item
 		type:		'armor'
 		defense:	@defense
 		attack:		@attack
+
+exports.read = (json) ->
+	switch json.type
+		when "gold"
+			new Gold json.value
+		when "weapon"
+			new Weapon json
+		when "armor"
+			new Armor json
+		else
+			throw new Error "Whoa, unknown item #{item}"
