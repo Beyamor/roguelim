@@ -93,9 +93,10 @@ class exports.Level
 				@cells[x].push new Cell this, x, y, WALL_TILE
 
 	placeOnFreeCell: (entity) ->
-		@move entity, @getFreeCell()
+		@place entity, @getFreeCell()
 
-	move: (entity, newCell) ->
+	# move, but, like, without the callbacks
+	place: (entity, newCell) ->
 		if newCell? and newCell.entity?
 			throw new Error "Cell already has an entity"
 
@@ -104,11 +105,15 @@ class exports.Level
 
 		if newCell?
 			newCell.entity = entity
+
+		entity.cell = newCell
+
+	move: (entity, newCell) ->
+		@place entity, newCell
+		if newCell?
 			for item in newCell.items.clone
 				if item.onTouch?
 					item.onTouch entity
-
-		entity.cell = newCell
 		entity.onMove() if entity.onMove?
 
 	eachCell: (f) ->
@@ -248,7 +253,7 @@ class exports.Level
 
 			{x, y} = entityJSON
 			if x? and y?
-				level.move entity, level.cells[x][y]
+				level.place entity, level.cells[x][y]
 
 			if entityJSON.type is "player"
 				level.player = entity
