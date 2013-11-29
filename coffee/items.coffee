@@ -72,10 +72,10 @@ class exports.Armor extends Item
 exports.read = (json) ->
 	switch json.type
 		when "gold"
-			new Gold json.value
+			new exports.Gold json.value
 		when "weapon"
-			new Weapon json
+			new exports.Weapon json
 		when "armor"
-			new Armor json
+			new exports.Armor json
 		else
 			throw new Error "Whoa, unknown item #{item}"

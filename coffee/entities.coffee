@@ -10,8 +10,8 @@ class Entity
 		@isAlive	= true
 		@hp		= opts.hp or 1
 		@name		= opts.name
-		@team		= opts.team
-		@type		= opts.type
+		@team or= opts.team
+		@type or= opts.type
 
 		@mixins		= []
 		mixinNames	= opts.mixins or []
@@ -70,27 +70,35 @@ class Entity
 
 	toJSON: ->
 		json = {}
-		for k, v of this when not util.isFn v
-			json[k] = v
-
+		for k, v of this
+			continue if util.isFn v
+			json[k] =
+				switch k
+					when "mixins"
+						(mixin.name for mixin in v)
+					else
+						v
 		if @cell?
 			json.x = @cell.x
 			json.y = @cell.y
 		return json
 
 class exports.Player extends Entity
-	constructor: () ->
+	type: "player"
+	team: "player"
+
+	constructor: (opts) ->
 		super "0",
-			hp: Infinity#10
-			name: "Player"
-			team: "player"
-			type: "player"
-			mixins: [
-				'attacker'
-				'defender'
-				'messageReceiver'
-				'goldHolder'
-			]
+			util.extend(
+				hp: 10
+				name: "Player"
+				mixins: [
+					'attacker'
+					'defender'
+					'messageReceiver'
+					'goldHolder'
+				]
+			, opts)
 
 		@weapon = new items.Weapon.create()
 
@@ -105,12 +113,13 @@ class exports.Player extends Entity
 			@sendMessage "You found the exit"
 
 class exports.Enemy extends Entity
-	constructor: (name) ->
-		super "9",
-			name: name
-			team: "enemy"
-			type: "enemy"
-			mixins: ['attacker', 'defender']
+	type: "enemy"
+	team: "enemy"
+
+	constructor: (opts) ->
+		super "9", util.extend(
+				mixins: ['attacker', 'defender']
+			, opts)
 
 	update: ->
 		super()
@@ -139,3 +148,12 @@ class exports.Enemy extends Entity
 			new items.Weapon.create()
 			new items.Armor.create()
 		]
+
+exports.read = (json) ->
+	switch json.type
+		when "player"
+			new exports.Player json
+		when "enemy"
+			new exports.Enemy json
+		else
+			throw new Error "Unknown entity #{json.type}"

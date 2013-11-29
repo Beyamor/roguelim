@@ -75,7 +75,7 @@ exports.construct = (level) ->
 		while usedNames.contains name
 			name = random.choice level.dungeon.enemyNames
 
-		enemy = new entities.Enemy name
+		enemy = new entities.Enemy name: name
 		level.add enemy
 		level.placeOnFreeCell enemy
 

@@ -241,4 +241,15 @@ class exports.Level
 			for y in LEVEL_YS
 				level.cells[x][y] = Cell.read json.cells[x][y], level, x, y
 
+		for entityJSON in json.entities
+			entity = entities.read entityJSON
+			level.add entity
+
+			{x, y} = entityJSON
+			if x? and y?
+				level.move entity, level.cells[x][y]
+
+			if entityJSON.type is "player"
+				level.player = entity
+
 		return level

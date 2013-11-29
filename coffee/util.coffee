@@ -44,5 +44,11 @@ exports.directionBetween = (start, end) ->
 	else
 		throw new Exception "No direction for #{dx}, #{dy}"
 
-exports.isFn = (o) ->
+exports.isFn = (v) ->
 	typeof(v) is "function"
+
+exports.extend = (original, extras) ->
+	if extras
+		for k, v of extras
+			original[k] = v
+	return original
