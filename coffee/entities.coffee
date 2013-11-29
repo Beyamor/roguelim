@@ -6,8 +6,8 @@ items	= require './items.js'
 DIRECTIONS	= util.DIRECTIONS
 
 class Entity
-	constructor: (@glyph, opts) ->
-		{@isAlive, @hp, @name, @weapon, @armor} = opts
+	constructor: (@glyph, opts, read) ->
+		{@isAlive, @hp, @name} = opts
 		@team or= opts.team
 		@type or= opts.type
 
@@ -18,8 +18,12 @@ class Entity
 			mixins.apply mixin, this
 			@mixins.push mixin
 
-		for mixin in @mixins
-			mixin.initialize.call(this) if mixin.initialize?
+		for mixin in @mixins when mixin.initialize?
+			mixin.initialize.call(this)
+
+		if read
+			for mixin in @mixins when mixin.read?
+				mixin.read.call this, opts
 
 	actionsInDirection: (direction) ->
 		actions		= {}
@@ -85,7 +89,7 @@ class exports.Player extends Entity
 	type: "player"
 	team: "player"
 
-	constructor: (opts) ->
+	constructor: (opts, read) ->
 		super "0",
 			util.extend(
 				hp: 10
@@ -95,8 +99,9 @@ class exports.Player extends Entity
 					'defender'
 					'messageReceiver'
 					'goldHolder'
+					'equipper'
 				]
-			, opts)
+			, opts), read
 
 		unless @weapon
 			@weapon = new items.Weapon.create()
@@ -115,10 +120,10 @@ class exports.Enemy extends Entity
 	type: "enemy"
 	team: "enemy"
 
-	constructor: (opts) ->
+	constructor: (opts, read) ->
 		super "9", util.extend(
 				mixins: ['attacker', 'defender']
-			, opts)
+			, opts), read
 
 	update: ->
 		super()
@@ -149,13 +154,10 @@ class exports.Enemy extends Entity
 		]
 
 exports.read = (json) ->
-	json.weapon	= items.read(json.weapon) if json.weapon?
-	json.armor	= items.read(json.armor) if json.armor?
-
 	switch json.type
 		when "player"
-			new exports.Player json
+			new exports.Player json, true
 		when "enemy"
-			new exports.Enemy json
+			new exports.Enemy json, true
 		else
 			throw new Error "Unknown entity #{json.type}"

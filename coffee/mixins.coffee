@@ -1,4 +1,5 @@
 random	= require './random.js'
+items	= require './items.js'
 
 mixins = {}
 defmixin = (name, definition) ->
@@ -70,3 +71,10 @@ defmixin 'messageReceiver',
 defmixin 'goldHolder',
 	initialize: ->
 		defaults this, gold: 0
+
+defmixin 'equipper',
+	read: (json) ->
+		if json.weapon?
+			@weapon = items.read json.weapon
+		if json.armor?
+			@armor = items.read json.armor
