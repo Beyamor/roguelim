@@ -7,7 +7,9 @@ DIRECTIONS	= util.DIRECTIONS
 
 class Entity
 	constructor: (@glyph, opts, read) ->
-		{@isAlive, @hp, @name} = opts
+		@isAlive = true
+		{@hp, @name} = opts
+		@hp = 1 unless @hp?
 		@team or= opts.team
 		@type or= opts.type
 
